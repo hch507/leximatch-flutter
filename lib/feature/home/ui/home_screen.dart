@@ -17,7 +17,8 @@ class HomeScreen extends StatelessWidget {
           Text("Home Screen"),
           ElevatedButton(
             onPressed: () {
-              context.go(RoutePath.splash);
+              print("게임으로 이동");
+              context.go(RoutePath.game);
             },
             child: const Text("게임으로 이동"),
           )
