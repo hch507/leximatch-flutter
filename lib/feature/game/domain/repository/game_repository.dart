@@ -1,5 +1,5 @@
 
 
 abstract class GameRepository {
-  Future<void> getData();
+  Future<void> getSimilarity();
 }

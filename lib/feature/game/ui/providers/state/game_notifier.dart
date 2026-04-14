@@ -25,7 +25,7 @@ class GameNotifier extends AsyncNotifier<String> {
     state = const AsyncLoading();
 
     try {
-      await _repository.getData();
+      await _repository.getSimilarity();
       print("데이터 로드 완료");
       state = const AsyncData("데이터 로드 완료");
     } catch (e, st) {
