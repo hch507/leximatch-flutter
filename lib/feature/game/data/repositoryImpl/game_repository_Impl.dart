@@ -10,20 +10,21 @@ class GameRepositoryImpl implements GameRepository {
   GameRepositoryImpl(this.dio);
 
   @override
-  Future<void> getSimilarity() async{
+  Future<GameDto?> fetchSimilarity(String keyword) async{
     final response = await dio.get(
       '/similarity',
       queryParameters: {
         'text1': "사과",
-        'text2': "키위",
+        'text2': keyword,
       },
     );
 
-    final apiResponse = ApiResponse<GameDto>.fromJson(
+    final result = ApiResponse<GameDto>.fromJson(
       response.data,
           (data) => GameDto.fromJson(
         data as Map<String, dynamic>,
       ),
     );
-    print(response.data);
+    print(result.payload.data?.dist);
+    return result.payload.data;
   }}

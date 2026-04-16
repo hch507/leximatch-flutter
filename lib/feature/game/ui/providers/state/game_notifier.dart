@@ -1,16 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../../../data/dto/game_dto.dart';
 import '../../../domain/providers/game_repository_provider.dart';
 import '../../../domain/repository/game_repository.dart';
 
 
 
-class GameNotifier extends AsyncNotifier<String> {
+class GameNotifier extends AsyncNotifier<List<GameDto?>> {
   late final GameRepository _repository;
 
   @override
-  Future<String> build() async {
+  Future<List<GameDto?>> build()async {
     print("build 실행됨");
+
     try {
       _repository = ref.read(gameRepositoryProvider);
       print("repository 주입 성공");
@@ -18,16 +19,21 @@ class GameNotifier extends AsyncNotifier<String> {
       print("에러 발생: $e");
     }
 
-    return "초기 상태";
+    return [];
   }
 
-  Future<void> fetchGameData() async {
+  Future<void> fetchSimilarity(String keyword) async {
     state = const AsyncLoading();
-
+    final currentList = state.value ?? [];
     try {
-      await _repository.getSimilarity();
-      print("데이터 로드 완료");
-      state = const AsyncData("데이터 로드 완료");
+      final result = await _repository.fetchSimilarity(keyword);
+
+      print("데이터 로드 완료: ${result?.dist}");
+
+
+      final updatedList = [result,...currentList];
+
+      state = AsyncData(updatedList);
     } catch (e, st) {
       state = AsyncError(e, st);
     }

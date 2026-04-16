@@ -1,5 +1,7 @@
 
 
+import 'package:leximatch/feature/game/data/dto/game_dto.dart';
+
 abstract class GameRepository {
-  Future<void> getSimilarity();
+  Future<GameDto?> fetchSimilarity(String keyword);
 }
