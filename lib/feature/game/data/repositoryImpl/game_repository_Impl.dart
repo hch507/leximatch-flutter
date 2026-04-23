@@ -5,26 +5,36 @@ import 'package:leximatch/feature/game/domain/repository/game_repository.dart';
 import '../../../../core/network/common/api_response.dart';
 
 class GameRepositoryImpl implements GameRepository {
-
   final Dio dio;
   GameRepositoryImpl(this.dio);
 
   @override
-  Future<GameDto?> fetchSimilarity(String keyword) async{
-    final response = await dio.get(
-      '/similarity',
-      queryParameters: {
-        'text1': "사과",
-        'text2': keyword,
-      },
-    );
+  Future<GameDto?> fetchSimilarity(String keyword) async {
+    try {
+      final response = await dio.get(
+        '/similarity',
+        queryParameters: {
+          'text1': "사과",
+          'text2': keyword,
+        },
+      );
 
-    final result = ApiResponse<GameDto>.fromJson(
-      response.data,
-          (data) => GameDto.fromJson(
-        data as Map<String, dynamic>,
-      ),
-    );
-    print(result.payload.data?.dist);
-    return result.payload.data;
-  }}
+      // response.data가 이미 Map인 경우 (Dio의 특징)
+      final result = ApiResponse<GameDto>.fromJson(
+        response.data,
+            (data) => GameDto.fromJson(data as Map<String, dynamic>),
+      );
+
+      // 성공 코드(200) 확인 후 body 반환
+      if (result.result.resultCode == 200) {
+        return result.body;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      // 네트워크 에러 등 예외 처리
+      print("Error fetching similarity: $e");
+      return null;
+    }
+  }
+}
