@@ -14,7 +14,11 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: RoutePath.home,
-      builder: (context, state) => const HomeScreen(),
+      pageBuilder: (context, state) {
+        return const NoTransitionPage(
+          child: HomeScreen(),
+        );
+      },
     ),
     GoRoute(
       path: RoutePath.game,
