@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:leximatch/feature/game/ui/providers/game_state_provider.dart';
+
+import '../../../core/router/route_path.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen({super.key});
@@ -48,7 +51,8 @@ class _InputSectionState extends ConsumerState<InputSection> {
           ElevatedButton(
               onPressed: () {
                 final text = _textEditingController.text;
-                ref.read(gameStateProvider.notifier).fetchSimilarity(text);
+                context.go(RoutePath.result);
+                // ref.read(gameStateProvider.notifier).fetchSimilarity(text);
               },
               child: const Text("유사도 체크")
           )
