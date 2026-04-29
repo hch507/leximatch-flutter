@@ -57,16 +57,18 @@ class _HomeContent extends StatelessWidget {
 
           Expanded(
             flex: 5,
-            child: SizedBox(
+            child: Container(
               width: double.infinity,
-              height: double.infinity,
-              child: Image.asset(
-                'assets/images/home_lotto_icon.png',
-                fit: BoxFit.contain, // ⭐️ 중요
+              child: Align(
+                alignment: const Alignment(0, 0.6), // 아래로 이동
+                child: Image.asset(
+                  'assets/images/ic_home_lodo.png',
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),
-          // 🔥 하단 70% (버튼 영역)
+
           Expanded(
             flex: 2,
             child: Column(
