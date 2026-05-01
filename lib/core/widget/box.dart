@@ -5,18 +5,26 @@ import '../style/colors.dart';
 
 class LexiMatchBox extends StatelessWidget {
   final Widget child;
+  final EdgeInsetsGeometry? padding;
 
   const LexiMatchBox({
     super.key,
     required this.child,
+    this.padding,
   });
 
   @override
   Widget build(
     BuildContext context,
   ) {
+    final appliedPadding =
+        padding ??
+            const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 20,
+            );
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
+        padding: appliedPadding,
         decoration: BoxDecoration(
             color: AppColors.background,
             borderRadius: BorderRadius.circular(16),

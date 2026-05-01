@@ -1,10 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:leximatch/core/widget/box.dart';
 import 'package:leximatch/feature/game/data/dto/game_dto.dart';
 import 'package:leximatch/feature/game/ui/providers/game_state_provider.dart';
+import 'package:leximatch/feature/game/ui/providers/state/game_ui_state.dart';
+import 'package:leximatch/feature/game/ui/widgets/card/research_card.dart';
+import 'package:leximatch/feature/game/ui/widgets/card/top5_result_card.dart';
+import 'package:leximatch/feature/game/ui/widgets/dialog/correct_answer_dialog.dart';
 
+import '../../../core/router/route_path.dart';
 import '../../../core/style/colors.dart';
 import '../../../core/widget/button.dart';
 
@@ -49,7 +55,19 @@ class GameAppBar extends StatelessWidget implements PreferredSizeWidget {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: PressableImageButton(
                   imagePath: "assets/images/ic_home.png",
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      barrierColor: Colors.black.withOpacity(0.55),
+                      builder: (_) => CorrectAnswerDialog(
+                        elapsedTime: '00:23',
+                        onConfirm: () {
+                          context.go(RoutePath.home);
+                        },
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -119,10 +137,11 @@ class _InputSectionState extends ConsumerState<InputSection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: LexiMatchBox(
+          padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
@@ -135,16 +154,35 @@ class _InputSectionState extends ConsumerState<InputSection> {
                   setState(() {});
                 },
               ),
-              SizedBox(height: 16),
-              LexiGameButton(
-                text: "유사도 체크",
-                width: 150,
-                height: 50,
-                onTap: () {
-                  ref
-                      .read(gameStateProvider.notifier)
-                      .fetchSimilarity(_textEditingController.text);
-                },
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    child: LexiGameButton(
+                      text: "유사도 체크",
+                      width: 150,
+                      height: 50,
+                      onTap: () {
+                        ref
+                            .read(gameStateProvider.notifier)
+                            .fetchSimilarity(_textEditingController.text);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SizedBox(
+                      height: 100,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Image.asset(
+                          "assets/images/ic_lodo_search.png",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               )
             ],
           ),
@@ -168,42 +206,63 @@ class ResultSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(gameStateProvider);
+    final asyncState = ref.watch(gameStateProvider);
+
+    final gameState = asyncState.value ?? const GameUiState();
+    final myResult = gameState.displayMyResult;
+    final top5 = gameState.top5;
 
     return Padding(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.only(
+        left: 10,
+        right: 10,
+        top: 10,
+        bottom: MediaQuery.of(context).padding.bottom + 12,
+      ),
       child: LexiMatchBox(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12,10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 12,
+            Align(
+              alignment: const Alignment(-0.9, 0), // 시작점에서 약 10% 안쪽
+              child: Image.asset(
+                'assets/images/ic_my_research_title.png',
+                height: 30,
+              ),
+            ),
+            MySearchResultCard(
+              input: myResult.userInput,
+              similarity: myResult.dist.toString(),
+              rank: myResult.ranking.toString(),
+            ),
+            const Divider(
+              height: 24,
+              thickness: 1.2,
+              color: Color(0xFFE3D7BE),
+              indent: 18,
+              endIndent: 18,
             ),
             Expanded(
-              child: state.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(
-                  child: Text("에러: $e"),
-                ),
-                data: (list) {
-                  if (list.isEmpty) {
-                    return const Center(child: Text("데이터 없음"));
-                  }
+              child: Column(
+                children: List.generate(5, (index) {
+                  final hasItem = index < top5.length;
 
-                  return ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: list.length,
-                    itemBuilder: (context, index) {
-                      final item = list[index];
-
-                      return _ResultCard(
-                        item: item,
-                      );
-                    },
+                  return Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: hasItem
+                          ? Top5ResultCard(
+                        item: top5[index],
+                        rank: index + 1,
+                      )
+                          : const SizedBox.expand(),
+                    ),
                   );
-                },
+                }),
               ),
-            )
+            ),
+            ResultHintCard()
           ],
         ),
       ),
@@ -211,29 +270,6 @@ class ResultSection extends ConsumerWidget {
   }
 }
 
-class _ResultCard extends StatelessWidget {
-  final GameDto? item;
-
-  const _ResultCard({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("입력: ${item?.userInput}"),
-            Text("dist: ${item?.dist}"),
-            Text("ranking: ${item?.ranking}"),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class LexiTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -294,6 +330,53 @@ class LexiTextField extends StatelessWidget {
             width: 1.8,
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+class ResultHintCard extends StatelessWidget {
+
+  const ResultHintCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFAED),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: const Color(0xFFEFD8A8),
+          width: 1.2,
+        ),
+      ),
+      child: Row(
+        children: [
+          Image.asset(
+            'assets/images/ic_hint.png',
+            width: 28,
+            height: 28,
+          ),
+
+          const SizedBox(width: 10),
+
+          const Expanded(
+            child: Text(
+              '매일 정각 정답 단어가 변경되요!',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF4A3A2A),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
