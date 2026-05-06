@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/router/route_path.dart';
+import '../../../core/widget/button.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: HomeBody());
+    return const Scaffold(body: HomeBody());
   }
 }
 
@@ -41,7 +42,6 @@ class _HomeContent extends StatelessWidget {
     return SafeArea(
       child: Column(
         children: [
-          // 🔥 상단 30% (로고 영역)
           Expanded(
             flex: 3,
             child: Center(
@@ -54,43 +54,27 @@ class _HomeContent extends StatelessWidget {
               ),
             ),
           ),
-
           Expanded(
             flex: 5,
-            child: Container(
-              width: double.infinity,
-              child: Align(
-                alignment: const Alignment(0, 0.6), // 아래로 이동
-                child: Image.asset(
-                  'assets/images/ic_home_lodo.png',
-                  fit: BoxFit.contain,
-                ),
+            child: Align(
+              alignment: const Alignment(0, 0.6), // 아래로 이동
+              child: Image.asset(
+                'assets/images/ic_home_lodo.png',
+                fit: BoxFit.contain,
               ),
             ),
           ),
-
           Expanded(
             flex: 2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () => context.go(RoutePath.game),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 16,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: const Text(
-                    "게임 시작",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ],
+            child: Center(
+              child: LexiGameButton(
+                text: "게임 시작",
+                width: 150,
+                height: 50,
+                onTap: () {
+                  context.go(RoutePath.game);
+                },
+              ),
             ),
           ),
         ],
