@@ -6,19 +6,12 @@ import 'game_ui_state.dart';
 
 
 
-class GameNotifier extends AsyncNotifier<GameUiState> {
-  late final GameRepository _repository;
+class GameNotifier extends AutoDisposeAsyncNotifier<GameUiState> {
+  late final GameRepository _repository =
+  ref.read(gameRepositoryProvider);
 
   @override
-  Future<GameUiState> build()async {
-    print("build 실행됨");
-
-    try {
-      _repository = ref.read(gameRepositoryProvider);
-      print("repository 주입 성공");
-    } catch (e) {
-      print("에러 발생: $e");
-    }
+  Future<GameUiState> build() async {
 
     return const GameUiState();
   }
@@ -49,6 +42,7 @@ class GameNotifier extends AsyncNotifier<GameUiState> {
         ),
       );
     } catch (e, st) {
+      print("------------------------------에러 발생: $e, $st");
       state = AsyncError(e, st);
     }
   }

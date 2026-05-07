@@ -6,6 +6,6 @@ import '../../data/dto/game_dto.dart';
 
 
 final gameStateProvider =
-AsyncNotifierProvider<GameNotifier, GameUiState>(
-      () => GameNotifier(),
+AsyncNotifierProvider.autoDispose<GameNotifier, GameUiState>(
+  GameNotifier.new,
 );

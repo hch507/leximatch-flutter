@@ -53,7 +53,7 @@ class Top5ResultCard extends StatelessWidget {
             const VerticalDivider(
               width: 10,
               thickness: 1.4,
-              color: Color(0xFFB7DDF6),
+              color: Color(0xFFE7D8C0),
               indent: 18,
               endIndent: 18,
             ),
@@ -71,7 +71,7 @@ class Top5ResultCard extends StatelessWidget {
             const VerticalDivider(
               width: 10,
               thickness: 1.4,
-              color: Color(0xFFB7DDF6),
+              color: Color(0xFFE7D8C0),
               indent: 18,
               endIndent: 18,
             ),

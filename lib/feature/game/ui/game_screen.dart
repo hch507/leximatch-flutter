@@ -56,17 +56,7 @@ class GameAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: PressableImageButton(
                   imagePath: "assets/images/ic_home.png",
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      barrierColor: Colors.black.withOpacity(0.55),
-                      builder: (_) => CorrectAnswerDialog(
-                        elapsedTime: '00:23',
-                        onConfirm: () {
-                          context.go(RoutePath.home);
-                        },
-                      ),
-                    );
+                    context.go(RoutePath.home);
                   },
                 ),
               ),
@@ -92,7 +82,7 @@ class GameBody extends StatelessWidget {
           fit: BoxFit.cover,
         ),
       ),
-      child: Column(
+      child: const Column(
         children: [
           Expanded(
             flex: 4,
@@ -212,6 +202,21 @@ class ResultSection extends ConsumerWidget {
     final myResult = gameState.displayMyResult;
     final top5 = gameState.top5;
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (myResult.dist.toString() == '100.0') {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => CorrectAnswerDialog(
+            elapsedTime: '00:23',
+            onConfirm: () {
+              Navigator.pop(context);
+              context.go(RoutePath.home);
+            },
+          ),
+        );
+      }
+    });
     return Padding(
       padding: EdgeInsets.only(
         left: 10,
