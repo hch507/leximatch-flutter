@@ -10,6 +10,7 @@ import 'package:leximatch/feature/game/ui/widgets/card/research_card.dart';
 import 'package:leximatch/feature/game/ui/widgets/card/top5_result_card.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/correct_answer_dialog.dart';
 
+import '../../../core/network/exception/api_exception.dart';
 import '../../../core/router/route_path.dart';
 import '../../../core/style/colors.dart';
 import '../../../core/widget/button.dart';
@@ -88,9 +89,9 @@ class GameBody extends StatelessWidget {
             flex: 4,
             child: InputSection(),
           ),
-          SizedBox(height: 12),
+          SizedBox(height: 5),
           Expanded(
-            flex: 6,
+            flex: 7,
             child: ResultSection(),
           )
         ],
@@ -182,41 +183,23 @@ class _InputSectionState extends ConsumerState<InputSection> {
   }
 }
 
-class Result extends StatelessWidget {
-  const Result({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
-
 class ResultSection extends ConsumerWidget {
   const ResultSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    _listenCorrectAnswerDialog(context, ref);
     final asyncState = ref.watch(gameStateProvider);
 
     final gameState = asyncState.value ?? const GameUiState();
     final myResult = gameState.displayMyResult;
     final top5 = gameState.top5;
+    final error = asyncState.error;
+    
+    final isWordNotInDictionary =
+        error is ApiException && error.resultCode == 6001;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (myResult.dist.toString() == '100.0') {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (_) => CorrectAnswerDialog(
-            elapsedTime: '00:23',
-            onConfirm: () {
-              Navigator.pop(context);
-              context.go(RoutePath.home);
-            },
-          ),
-        );
-      }
-    });
     return Padding(
       padding: EdgeInsets.only(
         left: 10,
@@ -237,10 +220,22 @@ class ResultSection extends ConsumerWidget {
               ),
             ),
             MySearchResultCard(
-              input: myResult.userInput,
-              similarity: myResult.dist.toString(),
-              rank: myResult.ranking.toString(),
+              input: isWordNotInDictionary ? "-" : myResult.userInput,
+              similarity: isWordNotInDictionary ? "-" :myResult.dist.toString(),
+              rank: isWordNotInDictionary ? "-" : myResult.ranking.toString(),
             ),
+            if (isWordNotInDictionary)
+              const Padding(
+                padding: EdgeInsets.only(top: 2, left: 18),
+                child: Text(
+                  '단어를 찾지 못했습니다',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
             const Divider(
               height: 24,
               thickness: 1.2,
@@ -249,7 +244,17 @@ class ResultSection extends ConsumerWidget {
               endIndent: 18,
             ),
             Expanded(
-              child: Column(
+              child: top5.isEmpty
+                  ? const Center(
+                child: Text(
+                  "최근 검색어가 없습니다",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+              )
+                  : Column(
                 children: List.generate(5, (index) {
                   final hasItem = index < top5.length;
 
@@ -267,7 +272,7 @@ class ResultSection extends ConsumerWidget {
                 }),
               ),
             ),
-            ResultHintCard()
+            const ResultHintCard()
           ],
         ),
       ),
@@ -385,4 +390,30 @@ class ResultHintCard extends StatelessWidget {
       ),
     );
   }
+}
+
+void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
+  ref.listen<AsyncValue<GameUiState>>(gameStateProvider, (prev, next) {
+    final previousResult = prev?.valueOrNull?.displayMyResult;
+    final currentResult = next.valueOrNull?.displayMyResult;
+
+    if (currentResult == null) return;
+
+    final wasCorrect = previousResult?.dist.toString() == '100.0';
+    final isCorrect = currentResult.dist.toString() == '100.0';
+
+    if (!wasCorrect && isCorrect) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => CorrectAnswerDialog(
+          elapsedTime: currentResult.elapsedTime,
+          onConfirm: () {
+            Navigator.pop(context);
+            context.go(RoutePath.home);
+          },
+        ),
+      );
+    }
+  });
 }
