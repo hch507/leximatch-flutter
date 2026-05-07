@@ -12,11 +12,10 @@ class GameRepositoryImpl implements GameRepository {
   @override
   Future<GameDto?> fetchSimilarity(String keyword) {
     return apiClient.request<GameDto>(
-      '/similarity',
+      '/api/games/guess',
       method: 'GET',
       queryParameters: {
-        'text1': '사과',
-        'text2': keyword,
+        'input': keyword,
       },
       fromJson: (json) {
         return GameDto.fromJson(json as Map<String, dynamic>);

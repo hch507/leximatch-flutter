@@ -16,6 +16,7 @@ class GameUiState {
           userInput: '-',
           dist: '-',
           ranking: '-',
+          elapsedTime: "-"
         );
   }
 
