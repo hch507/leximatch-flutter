@@ -18,9 +18,12 @@ class GameNotifier extends AutoDisposeAsyncNotifier<GameUiState> {
 
 
   Future<void> fetchSimilarity(String keyword) async {
+    if (state.isLoading) return;
     final previous = state.value ?? const GameUiState();
 
-    state = const AsyncLoading();
+    state = const AsyncLoading<GameUiState>().copyWithPrevious(
+      AsyncData(previous),
+    );
 
     try {
       final result = await _repository.fetchSimilarity(keyword);
