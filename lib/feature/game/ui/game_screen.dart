@@ -196,7 +196,7 @@ class ResultSection extends ConsumerWidget {
     final myResult = gameState.displayMyResult;
     final top5 = gameState.top5;
     final error = asyncState.error;
-    
+
     final isWordNotInDictionary =
         error is ApiException && error.resultCode == 6001;
 
@@ -401,7 +401,6 @@ void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
 
     final wasCorrect = previousResult?.dist.toString() == '100.0';
     final isCorrect = currentResult.dist.toString() == '100.0';
-
     if (!wasCorrect && isCorrect) {
       showDialog(
         context: context,
