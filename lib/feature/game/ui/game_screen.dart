@@ -201,11 +201,11 @@ class ResultSection extends ConsumerWidget {
     final gameState = asyncState.value ?? const GameUiState();
     final myResult = gameState.displayMyResult;
     final top5 = gameState.top5;
-    final error = asyncState.error;
 
-    final isWordNotInDictionary =
-        error is ApiException && error.resultCode == 6001;
 
+    final isWordNotInDictionary = gameState.isWordNotFound;
+
+    final isServerError = asyncState.hasError;
     return Padding(
       padding: EdgeInsets.only(
         left: 10,
@@ -250,34 +250,40 @@ class ResultSection extends ConsumerWidget {
               endIndent: 18,
             ),
             Expanded(
-              child: top5.isEmpty
-                  ? const Center(
-                child: Text(
-                  "최근 검색어가 없습니다",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
-              )
-                  : Column(
-                children: List.generate(5, (index) {
-                  final hasItem = index < top5.length;
-
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: hasItem
-                          ? Top5ResultCard(
-                        item: top5[index],
-                        rank: index + 1,
-                      )
-                          : const SizedBox.expand(),
-                    ),
-                  );
-                }),
+              child: _buildTop5Section(
+                isServerError: asyncState.hasError,
+                top5: top5,
               ),
             ),
+            // Expanded(
+            //   child: top5.isEmpty
+            //       ? const Center(
+            //     child: Text(
+            //       "최근 검색어가 없습니다",
+            //       style: TextStyle(
+            //         fontSize: 14,
+            //         color: Colors.grey,
+            //       ),
+            //     ),
+            //   )
+            //       : Column(
+            //     children: List.generate(5, (index) {
+            //       final hasItem = index < top5.length;
+            //
+            //       return Expanded(
+            //         child: Padding(
+            //           padding: const EdgeInsets.symmetric(vertical: 5),
+            //           child: hasItem
+            //               ? Top5ResultCard(
+            //             item: top5[index],
+            //             rank: index + 1,
+            //           )
+            //               : const SizedBox.expand(),
+            //         ),
+            //       );
+            //     }),
+            //   ),
+            // ),
             const ResultHintCard()
           ],
         ),
@@ -421,6 +427,90 @@ class ResultHintCard extends StatelessWidget {
   }
 }
 
+Widget _buildTop5Section({
+  required bool isServerError,
+  required List<GameDto> top5,
+}) {
+  if (isServerError) {
+    return _buildServerError();
+  }
+
+  if (top5.isEmpty) {
+    return _buildEmptyTop5();
+  }
+
+  return _buildTop5List(top5);
+}
+
+Widget _buildServerError() {
+  return Center(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image.asset(
+          'assets/images/server_error_lodo.png', // 네가 넣을 이미지 경로
+          width: 150,
+        ),
+
+        const SizedBox(height: 12),
+
+        const Text(
+          "서버 오류가 발생했습니다",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 15,
+            color: Colors.red,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+
+        const SizedBox(height: 4),
+
+        const Text(
+          "잠시 후 다시 시도해주세요",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.black87,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _buildEmptyTop5() {
+  return const Center(
+    child: Text(
+      "최근 검색어가 없습니다",
+      style: TextStyle(
+        fontSize: 14,
+        color: Colors.grey,
+      ),
+    ),
+  );
+}
+
+Widget _buildTop5List(List<GameDto> top5) {
+  return Column(
+    children: List.generate(5, (index) {
+      final hasItem = index < top5.length;
+
+      return Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: hasItem
+              ? Top5ResultCard(
+            item: top5[index],
+            rank: index + 1,
+          )
+              : const SizedBox.expand(),
+        ),
+      );
+    }),
+  );
+}
 void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
   ref.listen<AsyncValue<GameUiState>>(gameStateProvider, (prev, next) {
     final previousResult = prev?.valueOrNull?.displayMyResult;

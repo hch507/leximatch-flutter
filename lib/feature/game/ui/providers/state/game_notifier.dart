@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../../core/network/exception/api_exception.dart';
 import '../../../data/dto/game_dto.dart';
 import '../../../domain/providers/game_repository_provider.dart';
 import '../../../domain/repository/game_repository.dart';
@@ -44,10 +45,19 @@ class GameNotifier extends AutoDisposeAsyncNotifier<GameUiState> {
         previous.copyWith(
           myResult: result,
           results: updatedResults,
+          isWordNotFound: false,
         ),
       );
     } catch (e, st) {
       print("------------------------------에러 발생: $e, $st");
+      if (e is ApiException && e.resultCode == 6001) {
+        state = AsyncData(
+          previous.copyWith(
+            isWordNotFound: true,
+          ),
+        );
+        return;
+      }
       state = AsyncError(e, st);
     }
   }
