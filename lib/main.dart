@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       theme: AppTheme.lightTheme,
+      themeMode: ThemeMode.light, //
       routerConfig: appRouter,
       title: 'LexiMatch',
     );
