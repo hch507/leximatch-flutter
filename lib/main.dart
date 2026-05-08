@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:leximatch/core/router/app_router.dart';
@@ -6,6 +7,12 @@ import 'package:leximatch/core/router/app_router.dart';
 import 'core/style/theme.dart';
 
 Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   await dotenv.load(fileName: ".env");
   runApp(
     const ProviderScope(
