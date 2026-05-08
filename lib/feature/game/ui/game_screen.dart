@@ -109,7 +109,7 @@ class InputSection extends ConsumerStatefulWidget {
 
 class _InputSectionState extends ConsumerState<InputSection> {
   final TextEditingController _textEditingController = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -133,49 +133,55 @@ class _InputSectionState extends ConsumerState<InputSection> {
         alignment: Alignment.bottomCenter,
         child: LexiMatchBox(
           padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              LexiTextField(
-                controller: _textEditingController,
-                onClear: () {
-                  _textEditingController.clear();
-                  setState(() {});
-                },
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    child: LexiGameButton(
-                      text: "유사도 체크",
-                      width: 150,
-                      height: 50,
-                      onTap: () {
-                        ref
-                            .read(gameStateProvider.notifier)
-                            .fetchSimilarity(_textEditingController.text);
-                      },
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LexiTextField(
+                  controller: _textEditingController,
+                  onClear: () {
+                    _textEditingController.clear();
+                    setState(() {});
+                  },
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: LexiGameButton(
+                        text: "유사도 체크",
+                        width: 150,
+                        height: 50,
+                        onTap: () {
+                          if (!(_formKey.currentState?.validate() ?? false)) {
+                            return;
+                          }
+                          ref
+                              .read(gameStateProvider.notifier)
+                              .fetchSimilarity(_textEditingController.text);
+                        },
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: SizedBox(
-                      height: 100,
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Image.asset(
-                          "assets/images/ic_lodo_search.png",
-                          fit: BoxFit.contain,
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: SizedBox(
+                        height: 100,
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Image.asset(
+                            "assets/images/ic_lodo_search.png",
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              )
-            ],
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -295,14 +301,21 @@ class LexiTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: controller,
       minLines: 1,
       style: const TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
+
       ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return '단어를 입력해주세요';
+        }
+        return null;
+      },
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: Padding(
@@ -312,6 +325,7 @@ class LexiTextField extends StatelessWidget {
             width: 30,
             height: 30,
           ),
+
         ),
         suffixIcon: GestureDetector(
           onTap: onClear,
@@ -337,6 +351,21 @@ class LexiTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(
             color: AppColors.primary,
+            width: 1.8,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(
+            color: Colors.red,
+            width: 1.5,
+          ),
+        ),
+
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(
+            color: Colors.red,
             width: 1.8,
           ),
         ),
