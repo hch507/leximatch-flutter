@@ -35,7 +35,9 @@ class GameNotifier extends AutoDisposeAsyncNotifier<GameUiState> {
 
       final updatedResults = [
         result,
-        ...previous.results,
+        ...previous.results.where(
+              (e) => e.userInput != result.userInput,
+        ),
       ];
 
       state = AsyncData(
