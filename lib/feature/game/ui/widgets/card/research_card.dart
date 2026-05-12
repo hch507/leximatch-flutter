@@ -16,7 +16,7 @@ class MySearchResultCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80,
+      height: 60,
       padding: const EdgeInsets.symmetric(horizontal: 18),
       decoration: BoxDecoration(
         color: const Color(0xFFEAF7FF),
@@ -37,8 +37,8 @@ class MySearchResultCard extends StatelessWidget {
         children: [
           Image.asset(
             'assets/images/ic_research.png',
-            width: 45,
-            height: 45,
+            width: 30,
+            height: 30,
           ),
           const SizedBox(width: 15),
           Expanded(
@@ -102,7 +102,7 @@ class _ResultColumn extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-            fontSize: 15,
+            fontSize: 12,
             fontWeight: FontWeight.w800,
             color: Color(0xFF4D4D4D),
           ),
@@ -114,7 +114,7 @@ class _ResultColumn extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           softWrap: false,
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 15,
             fontWeight: FontWeight.w900,
             color: Color(0xFF1677D2),
           ),

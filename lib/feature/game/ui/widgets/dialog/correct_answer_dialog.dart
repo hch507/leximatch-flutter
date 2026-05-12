@@ -63,18 +63,18 @@ class CorrectAnswerDialog extends StatelessWidget {
                       width: 2,
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  child: Column(
                     children: [
-                      Image.asset(
-                        'assets/images/ic_timer.png',
-                        width: 70,
-                        height: 70,
-                      ),
-                      const SizedBox(width: 18),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          Image.asset(
+                            'assets/images/ic_timer.png',
+                            width: 18,
+                            height: 18,
+                          ),
+                          const SizedBox(width: 5),
                           const Text(
                             '걸린 시간',
                             style: TextStyle(
@@ -83,17 +83,19 @@ class CorrectAnswerDialog extends StatelessWidget {
                               color: Color(0xFF5A3B22),
                             ),
                           ),
-                          Text(
-                            elapsedTime,
-                            style: const TextStyle(
-                              fontSize: 42,
-                              fontWeight: FontWeight.w900,
-                              color: Color(0xFF4A2D17),
-                            ),
-                          ),
                         ],
                       ),
+                      const SizedBox(width: 18),
+                      Text(
+                        elapsedTime,
+                        style: const TextStyle(
+                          fontSize: 42,
+                          fontWeight: FontWeight.w900,
+                          color: Color(0xFF4A2D17),
+                        ),
+                      ),
                     ],
+
                   ),
                 ),
 

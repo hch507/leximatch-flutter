@@ -33,37 +33,36 @@ class GameAppBar extends StatelessWidget implements PreferredSizeWidget {
   const GameAppBar({super.key});
 
   @override
-  Size get preferredSize => const Size.fromHeight(80);
+  Size get preferredSize => const Size.fromHeight(70);
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Image.asset(
-              'assets/images/leximatch_title_logo.png',
-              height: 70,
-              fit: BoxFit.contain,
-            ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Image.asset(
+            'assets/images/leximatch_title_logo.png',
+            height: 70,
+            fit: BoxFit.contain,
+          ),
 
-            // 왼쪽 버튼
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: PressableImageButton(
-                  imagePath: "assets/images/ic_home.png",
-                  onTap: () {
-                    context.go(RoutePath.home);
-                  },
-                ),
+          // 왼쪽 버튼
+          Align(
+            alignment: Alignment.centerLeft,
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: PressableImageButton(
+                imagePath: "assets/images/ic_home.png",
+                onTap: () {
+                  context.go(RoutePath.home);
+                },
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -83,23 +82,24 @@ class GameBody extends StatelessWidget {
           fit: BoxFit.cover,
         ),
       ),
-      child: const Column(
-        children: [
-          Expanded(
-            flex: 4,
-            child: InputSection(),
-          ),
-          SizedBox(height: 5),
-          Expanded(
-            flex: 7,
-            child: ResultSection(),
-          )
-        ],
+      child: SafeArea(
+        child: const Column(
+          children: [
+            SizedBox(
+                height :160,
+                child: InputSection(),
+            ),
+            SizedBox(height: 5),
+            Expanded(
+
+              child: ResultSection(),
+            )
+          ],
+        ),
       ),
     );
   }
 }
-
 class InputSection extends ConsumerStatefulWidget {
   const InputSection({super.key});
 
@@ -110,6 +110,8 @@ class InputSection extends ConsumerStatefulWidget {
 class _InputSectionState extends ConsumerState<InputSection> {
   final TextEditingController _textEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  bool _isInputError = false;
   @override
   void initState() {
     super.initState();
@@ -128,61 +130,68 @@ class _InputSectionState extends ConsumerState<InputSection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(30, 10, 30, 0),
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: LexiMatchBox(
-          padding: const EdgeInsets.fromLTRB(12, 20, 12, 0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                LexiTextField(
-                  controller: _textEditingController,
-                  onClear: () {
-                    _textEditingController.clear();
-                    setState(() {});
-                  },
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      child: LexiGameButton(
-                        text: "유사도 체크",
-                        width: 150,
-                        height: 50,
-                        onTap: () {
-                          if (!(_formKey.currentState?.validate() ?? false)) {
-                            return;
-                          }
-                          ref
-                              .read(gameStateProvider.notifier)
-                              .fetchSimilarity(_textEditingController.text);
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SizedBox(
-                        height: 100,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Image.asset(
-                            "assets/images/ic_lodo_search.png",
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
+      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+      child: LexiMatchBox(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            LexiTextField(
+              controller: _textEditingController,
+              onClear: () {
+                _textEditingController.clear();
+                setState(() {});
+              },
+              isError: _isInputError,
             ),
-          ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  child: LexiGameButton(
+                    text: "유사도 체크",
+                    width: 150,
+                    height: 40,
+                    onTap: () {
+                      final text = _textEditingController.text.trim();
+
+                      // 빈 값 검사
+                      if (text.isEmpty) {
+                        setState(() {
+                          _isInputError = true;
+                        });
+                        return;
+                      }
+
+                      // 에러 해제
+                      setState(() {
+                        _isInputError = false;
+                      });
+
+                      ref
+                          .read(gameStateProvider.notifier)
+                          .fetchSimilarity(text);
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: SizedBox(
+                    height: 80,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Image.asset(
+                        "assets/images/ic_lodo_search.png",
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );
@@ -204,8 +213,6 @@ class ResultSection extends ConsumerWidget {
 
 
     final isWordNotInDictionary = gameState.isWordNotFound;
-
-    final isServerError = asyncState.hasError;
     return Padding(
       padding: EdgeInsets.only(
         left: 10,
@@ -222,7 +229,7 @@ class ResultSection extends ConsumerWidget {
               alignment: const Alignment(-0.9, 0), // 시작점에서 약 10% 안쪽
               child: Image.asset(
                 'assets/images/ic_my_research_title.png',
-                height: 30,
+                height: 20,
               ),
             ),
             MySearchResultCard(
@@ -255,35 +262,6 @@ class ResultSection extends ConsumerWidget {
                 top5: top5,
               ),
             ),
-            // Expanded(
-            //   child: top5.isEmpty
-            //       ? const Center(
-            //     child: Text(
-            //       "최근 검색어가 없습니다",
-            //       style: TextStyle(
-            //         fontSize: 14,
-            //         color: Colors.grey,
-            //       ),
-            //     ),
-            //   )
-            //       : Column(
-            //     children: List.generate(5, (index) {
-            //       final hasItem = index < top5.length;
-            //
-            //       return Expanded(
-            //         child: Padding(
-            //           padding: const EdgeInsets.symmetric(vertical: 5),
-            //           child: hasItem
-            //               ? Top5ResultCard(
-            //             item: top5[index],
-            //             rank: index + 1,
-            //           )
-            //               : const SizedBox.expand(),
-            //         ),
-            //       );
-            //     }),
-            //   ),
-            // ),
             const ResultHintCard()
           ],
         ),
@@ -297,31 +275,28 @@ class LexiTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final VoidCallback? onClear;
-
+  final bool isError;
   const LexiTextField({
     super.key,
     required this.controller,
     this.hintText = "단어 입력",
     this.onClear,
+    this.isError = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return TextField(
       controller: controller,
       minLines: 1,
+
       style: const TextStyle(
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
 
       ),
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return '단어를 입력해주세요';
-        }
-        return null;
-      },
+
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: Padding(
@@ -348,30 +323,20 @@ class LexiTextField extends StatelessWidget {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            color: Color(0xFFB8B0AA),
-            width: 1.5,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            color: AppColors.primary,
-            width: 1.8,
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            color: Colors.red,
+          borderSide: BorderSide(
+            color: isError
+                ? Colors.red
+                : const Color(0xFFB8B0AA),
             width: 1.5,
           ),
         ),
 
-        focusedErrorBorder: OutlineInputBorder(
+        focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(
-            color: Colors.red,
+          borderSide: BorderSide(
+            color: isError
+                ? Colors.red
+                : AppColors.primary,
             width: 1.8,
           ),
         ),
@@ -403,8 +368,8 @@ class ResultHintCard extends StatelessWidget {
         children: [
           Image.asset(
             'assets/images/ic_hint.png',
-            width: 28,
-            height: 28,
+            width: 15,
+            height: 15,
           ),
 
           const SizedBox(width: 10),
@@ -415,7 +380,7 @@ class ResultHintCard extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 10,
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF4A3A2A),
               ),
