@@ -18,75 +18,77 @@ class Top5ResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = RankStyle.of(rank);
 
-    return SizedBox.expand(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: style.backgroundColor,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: style.borderColor,
-            width: 1.2,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+
+        final height = constraints.maxHeight;
+
+        final inputFontSize = height * 0.30;
+        final labelFontSize = height * 0.22;
+        final valueFontSize = height * 0.26;
+
+        return SizedBox.expand(
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 2,
+            ),
+            decoration: BoxDecoration(
+              color: style.backgroundColor,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: style.borderColor,
+                width: 1.2,
+              ),
+            ),
+            child: Row(
+              children: [
+
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    item.userInput,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: inputFontSize,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF222222),
+                    ),
+                  ),
+                ),
+
+
+                Expanded(
+                  flex: 3,
+                  child: _CardText(
+                    label: '유사도',
+                    value: item.dist.toString(),
+                    valueColor: style.pointColor,
+                    center: true,
+                    labelFontSize: labelFontSize,
+                    valueFontSize: valueFontSize,
+                  ),
+                ),
+
+
+
+                Expanded(
+                  flex: 3,
+                  child: _CardText(
+                    label: '순위',
+                    value: '${item.ranking} 위',
+                    valueColor: style.pointColor,
+                    center: true,
+                    labelFontSize: labelFontSize,
+                    valueFontSize: valueFontSize,
+                  ),
+                ),
+              ],
+            ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-
-            const SizedBox(width: 14),
-
-            Expanded(
-              flex: 3,
-              child: _CardText(
-                label: '단어:',
-                value: item.userInput,
-                valueColor: const Color(0xFF222222),
-              ),
-            ),
-
-            const VerticalDivider(
-              width: 10,
-              thickness: 1.4,
-              color: Color(0xFFE7D8C0),
-              indent: 18,
-              endIndent: 18,
-            ),
-
-            Expanded(
-              flex: 3,
-              child: _CardText(
-                label: '유사도',
-                value: item.dist.toString(),
-                valueColor: style.pointColor,
-                center: true,
-              ),
-            ),
-
-            const VerticalDivider(
-              width: 10,
-              thickness: 1.4,
-              color: Color(0xFFE7D8C0),
-              indent: 18,
-              endIndent: 18,
-            ),
-            Expanded(
-              flex: 3,
-              child: _CardText(
-                label: '순위',
-                value: '${item.ranking} 위',
-                valueColor: style.pointColor,
-                center: true,
-              ),
-            ),
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -97,35 +99,40 @@ class _CardText extends StatelessWidget {
   final Color valueColor;
   final bool center;
 
+  final double labelFontSize;
+  final double valueFontSize;
+
   const _CardText({
     required this.label,
     required this.value,
     required this.valueColor,
+    required this.labelFontSize,
+    required this.valueFontSize,
     this.center = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       mainAxisAlignment:
-      center ? MainAxisAlignment.center : MainAxisAlignment.start,
+          center ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 12,
+          style: TextStyle(
+            fontSize: labelFontSize,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF3F3A35),
+            color: const Color(0xFF3F3A35),
           ),
         ),
-        const SizedBox(width: 5),
+        const SizedBox(height: 3),
         Flexible(
           child: Text(
             value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: valueFontSize,
               fontWeight: FontWeight.w900,
               color: valueColor,
             ),

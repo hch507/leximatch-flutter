@@ -86,7 +86,7 @@ class GameBody extends StatelessWidget {
         child: const Column(
           children: [
             SizedBox(
-                height :160,
+                height :150,
                 child: InputSection(),
             ),
             SizedBox(height: 5),
@@ -130,9 +130,9 @@ class _InputSectionState extends ConsumerState<InputSection> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: LexiMatchBox(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 0),
+        padding: const EdgeInsets.fromLTRB(12, 5, 12, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
@@ -152,7 +152,7 @@ class _InputSectionState extends ConsumerState<InputSection> {
                 SizedBox(
                   child: LexiGameButton(
                     text: "유사도 체크",
-                    width: 150,
+                    width: 130,
                     height: 40,
                     onTap: () {
                       final text = _textEditingController.text.trim();
@@ -226,7 +226,7 @@ class ResultSection extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Align(
-              alignment: const Alignment(-0.9, 0), // 시작점에서 약 10% 안쪽
+              alignment: const Alignment(-0.85, 0), // 시작점에서 약 10% 안쪽
               child: Image.asset(
                 'assets/images/ic_my_research_title.png',
                 height: 20,
@@ -244,7 +244,7 @@ class ResultSection extends ConsumerWidget {
                   '단어를 찾지 못했습니다',
                   style: TextStyle(
                     color: Colors.red,
-                    fontSize: 14,
+                    fontSize: 10,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -303,8 +303,8 @@ class LexiTextField extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Image.asset(
             "assets/images/ic_paw.png",
-            width: 30,
-            height: 30,
+            width: 20,
+            height: 20,
           ),
 
         ),
@@ -312,7 +312,7 @@ class LexiTextField extends StatelessWidget {
           onTap: onClear,
           child: const Icon(
             Icons.cancel,
-            size: 24,
+            size: 20,
           ),
         ),
         filled: true,

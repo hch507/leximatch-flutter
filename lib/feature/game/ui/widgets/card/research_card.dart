@@ -107,14 +107,14 @@ class _ResultColumn extends StatelessWidget {
             color: Color(0xFF4D4D4D),
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 3),
         Text(
           value,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           softWrap: false,
           style: const TextStyle(
-            fontSize: 15,
+            fontSize: 12,
             fontWeight: FontWeight.w900,
             color: Color(0xFF1677D2),
           ),

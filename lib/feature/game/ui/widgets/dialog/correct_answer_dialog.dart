@@ -45,7 +45,7 @@ class CorrectAnswerDialog extends StatelessWidget {
                 // 강아지 이미지
                 Image.asset(
                   'assets/images/ic_lodo_success.png',
-                  height: 210,
+                  height: 150,
                   fit: BoxFit.contain,
                 ),
 
@@ -53,7 +53,6 @@ class CorrectAnswerDialog extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
-                    vertical: 8,
                   ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFFAED),
@@ -89,7 +88,7 @@ class CorrectAnswerDialog extends StatelessWidget {
                       Text(
                         elapsedTime,
                         style: const TextStyle(
-                          fontSize: 42,
+                          fontSize: 25,
                           fontWeight: FontWeight.w900,
                           color: Color(0xFF4A2D17),
                         ),
