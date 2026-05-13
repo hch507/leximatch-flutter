@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,10 +9,12 @@ import 'package:leximatch/feature/game/ui/widgets/card/research_card.dart';
 import 'package:leximatch/feature/game/ui/widgets/card/top5_result_card.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/correct_answer_dialog.dart';
 
+import '../../../core/ad/reward_manager.dart';
 import '../../../core/network/exception/api_exception.dart';
 import '../../../core/router/route_path.dart';
 import '../../../core/style/colors.dart';
-import '../../../core/widget/button.dart';
+import '../../../core/widget/button/lexi_game_button/lexi_game_button.dart';
+import '../../../core/widget/button/pressable_image_button.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen({super.key});
@@ -86,8 +87,8 @@ class GameBody extends StatelessWidget {
         child: const Column(
           children: [
             SizedBox(
-                height :150,
-                child: InputSection(),
+              height: 150,
+              child: InputSection(),
             ),
             SizedBox(height: 5),
             Expanded(
@@ -100,6 +101,7 @@ class GameBody extends StatelessWidget {
     );
   }
 }
+
 class InputSection extends ConsumerStatefulWidget {
   const InputSection({super.key});
 
@@ -112,6 +114,7 @@ class _InputSectionState extends ConsumerState<InputSection> {
   final _formKey = GlobalKey<FormState>();
 
   bool _isInputError = false;
+
   @override
   void initState() {
     super.initState();
@@ -203,7 +206,6 @@ class ResultSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     _listenCorrectAnswerDialog(context, ref);
     final asyncState = ref.watch(gameStateProvider);
 
@@ -218,10 +220,13 @@ class ResultSection extends ConsumerWidget {
         left: 10,
         right: 10,
         top: 10,
-        bottom: MediaQuery.of(context).padding.bottom + 12,
+        bottom: MediaQuery
+            .of(context)
+            .padding
+            .bottom + 12,
       ),
       child: LexiMatchBox(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12,10),
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -234,7 +239,8 @@ class ResultSection extends ConsumerWidget {
             ),
             MySearchResultCard(
               input: isWordNotInDictionary ? "-" : myResult.userInput,
-              similarity: isWordNotInDictionary ? "-" :myResult.dist.toString(),
+              similarity: isWordNotInDictionary ? "-" : myResult.dist
+                  .toString(),
               rank: isWordNotInDictionary ? "-" : myResult.ranking.toString(),
             ),
             if (isWordNotInDictionary)
@@ -276,6 +282,7 @@ class LexiTextField extends StatelessWidget {
   final String hintText;
   final VoidCallback? onClear;
   final bool isError;
+
   const LexiTextField({
     super.key,
     required this.controller,
@@ -346,11 +353,28 @@ class LexiTextField extends StatelessWidget {
 }
 
 
-class ResultHintCard extends StatelessWidget {
+class ResultHintCard extends StatefulWidget {
+  const ResultHintCard({super.key});
 
-  const ResultHintCard({
-    super.key,
-  });
+  @override
+  State<ResultHintCard> createState() => _ResultHintCardState();
+}
+
+class _ResultHintCardState extends State<ResultHintCard> {
+  late final RewardAdManager rewardAdManager;
+
+  @override
+  void initState() {
+    super.initState();
+    rewardAdManager = RewardAdManager();
+    rewardAdManager.load();
+  }
+
+  @override
+  void dispose() {
+    rewardAdManager.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -371,9 +395,7 @@ class ResultHintCard extends StatelessWidget {
             width: 15,
             height: 15,
           ),
-
           const SizedBox(width: 10),
-
           const Expanded(
             child: Text(
               '매일 정각 정답 단어가 변경되요!',
@@ -386,12 +408,29 @@ class ResultHintCard extends StatelessWidget {
               ),
             ),
           ),
+          LexiGameButton(
+            text: "힌트 보기",
+            width: 50,
+            height: 15,
+            onTap: () {
+              rewardAdManager.show(
+                onRewarded: () {
+                  debugPrint("광고 시청 완료");
+                },
+                onNotReady: () {
+                  debugPrint("광고 준비 안됨");
+                },
+                onFailedToShow: () {
+                  debugPrint("광고 표시 실패");
+                },
+              );
+            },
+          ),
         ],
       ),
     );
   }
 }
-
 Widget _buildTop5Section({
   required bool isServerError,
   required List<GameDto> top5,
@@ -476,6 +515,7 @@ Widget _buildTop5List(List<GameDto> top5) {
     }),
   );
 }
+
 void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
   ref.listen<AsyncValue<GameUiState>>(gameStateProvider, (prev, next) {
     final previousResult = prev?.valueOrNull?.displayMyResult;
@@ -489,13 +529,14 @@ void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => CorrectAnswerDialog(
-          elapsedTime: currentResult.elapsedTime,
-          onConfirm: () {
-            Navigator.pop(context);
-            context.go(RoutePath.home);
-          },
-        ),
+        builder: (_) =>
+            CorrectAnswerDialog(
+              elapsedTime: currentResult.elapsedTime,
+              onConfirm: () {
+                Navigator.pop(context);
+                context.go(RoutePath.home);
+              },
+            ),
       );
     }
   });
