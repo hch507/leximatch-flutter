@@ -4,7 +4,8 @@ class AppColors {
 
   // Main palette
   static const primary = Color(0xFFF4A261);
-  static const onPrimary =Color(0xFFE76F51);
+  static const onPrimary = Color(0xFFE76F51);
+
   static const secondary = Color(0xFFFFF3E0);
   static const accent = Color(0xFF2EC4B6);
 
@@ -18,30 +19,51 @@ class AppColors {
   // Neutrals
   static const textPrimary = Color(0xFF3A3A3A);
   static const textSecondary = Color(0xFF7A7A7A);
+
   static const border = Color(0xFFE6E6E6);
+
   static const background = Color(0xFFFFF7E8);
   static const surface = Color(0xFFFFFFFF);
 
-  // Gradients from the guide
-  // 버튼 기본
-  static const buttonPrimaryStart = Color(0xFFFFD84D); // 밝은 노랑
-  static const buttonPrimaryEnd   = Color(0xFFFFA000); // 주황
+  // =========================
+  // Orange Button
+  // =========================
 
-// 눌림
-  static const buttonPressedStart = Color(0xFFFFB84D);
-  static const buttonPressedEnd   = Color(0xFFE67E00);
+  static const orangeButtonStart = Color(0xFFFFD84D);
+  static const orangeButtonEnd = Color(0xFFFFA000);
 
-// 테두리
-  static const buttonBorder       = Color(0xFFE07A00);
-  static const buttonPressedBorder= Color(0xFFC75C1E);
+  static const orangeButtonPressedStart = Color(0xFFFFB84D);
+  static const orangeButtonPressedEnd = Color(0xFFE67E00);
 
-// 그림자
-  static const buttonShadow       = Color(0xFF9B4D00);
+  static const orangeButtonBorder = Color(0xFFE07A00);
+  static const orangeButtonPressedBorder = Color(0xFFC75C1E);
+
+  static const orangeButtonStroke = Color(0xFFF4A261);
+
+  static const orangeButtonShadow = Color(0xFF9B4D00);
+
+  // =========================
+  // Blue Button
+  // =========================
+
+  static const blueButtonStart = Color(0xFF9EE7FF);
+  static const blueButtonEnd = Color(0xFF56C7FF);
+
+  static const blueButtonPressedStart = Color(0xFF73D8FF);
+  static const blueButtonPressedEnd = Color(0xFF2EAEEA);
+
+  static const blueButtonBorder = Color(0xFF1F9DDB);
+  static const blueButtonPressedBorder = Color(0xFF187CB0);
+
+  static const blueButtonShadow = Color(0xFF146C94);
+
+  static const blueButtonStroke = Color(0xFF4A9FCC);
+
+  // Disabled
   static const buttonDisabledBorder = Color(0xFF9E9E9E);
 
   // Ranking badges
   static const gold = Color(0xFFFFC94A);
   static const silver = Color(0xFFA9B4C2);
   static const bronze = Color(0xFFE39A5B);
-
 }

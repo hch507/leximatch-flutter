@@ -16,7 +16,7 @@ class StrokeText extends StatelessWidget {
         this.fontSize = 18,
         this.fontWeight = FontWeight.bold,
         this.fillColor = Colors.white,
-        this.strokeColor = AppColors.buttonPressedBorder,
+        this.strokeColor = AppColors.orangeButtonPressedBorder,
         this.strokeWidth = 4,
       });
 
