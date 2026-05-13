@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/router/route_path.dart';
-import '../../../core/widget/button.dart';
+import '../../../core/widget/button/lexi_game_button/lexi_game_button.dart';
+
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
