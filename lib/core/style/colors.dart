@@ -23,6 +23,8 @@ class AppColors {
   static const border = Color(0xFFE6E6E6);
 
   static const background = Color(0xFFFFF7E8);
+  static const dialogBackground = Color(0xFFFFF6DF);
+
   static const surface = Color(0xFFFFFFFF);
 
   // =========================
@@ -41,6 +43,15 @@ class AppColors {
   static const orangeButtonStroke = Color(0xFFF4A261);
 
   static const orangeButtonShadow = Color(0xFF9B4D00);
+
+  // =========================
+  //  Orange Dialog
+  // =========================
+  static const orangeDialogBorder = Color(0xFFFFC95A);
+
+  // =========================
+  //  sub Dialog
+  // =========================
 
   // =========================
   // Blue Button
