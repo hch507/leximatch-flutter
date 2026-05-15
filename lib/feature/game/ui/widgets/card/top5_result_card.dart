@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../data/dto/game_dto.dart';
+
+import '../../../domain/model/game_dto.dart';
 import '../../style/rank_style.dart';
 
 class Top5ResultCard extends StatelessWidget {

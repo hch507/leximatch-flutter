@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/network/exception/api_exception.dart';
-import '../../../data/dto/game_dto.dart';
 import '../../../domain/providers/game_repository_provider.dart';
 import '../../../domain/repository/game_repository.dart';
 import 'game_ui_state.dart';
@@ -10,6 +9,7 @@ import 'game_ui_state.dart';
 class GameNotifier extends AutoDisposeAsyncNotifier<GameUiState> {
   late final GameRepository _repository =
   ref.read(gameRepositoryProvider);
+
 
   @override
   Future<GameUiState> build() async {

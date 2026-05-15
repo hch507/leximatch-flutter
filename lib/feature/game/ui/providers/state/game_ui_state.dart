@@ -1,4 +1,5 @@
-import '../../../data/dto/game_dto.dart';
+
+import '../../../domain/model/game_dto.dart';
 
 
 class GameUiState {
