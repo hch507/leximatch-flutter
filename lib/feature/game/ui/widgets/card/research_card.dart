@@ -6,25 +6,55 @@ class MySearchResultCard extends StatelessWidget {
   final String similarity;
   final String rank;
 
+  final bool showSearchIcon;
+
+  final double height;
+
   const MySearchResultCard({
     super.key,
     required this.input,
     required this.similarity,
     required this.rank,
+
+    this.showSearchIcon = true,
+
+    this.height = 60,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    final titleFontSize =
+        height * 0.20;
+
+    final valueFontSize =
+        height * 0.22;
+
+    final iconSize =
+        height * 0.5;
+
+    final borderRadius =
+        height * 0.3;
+
     return Container(
-      height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 18),
+      height: height,
+
+      padding: EdgeInsets.symmetric(
+        horizontal: height * 0.3,
+      ),
+
       decoration: BoxDecoration(
         color: const Color(0xFFEAF7FF),
-        borderRadius: BorderRadius.circular(18),
+
+        borderRadius: BorderRadius.circular(
+          borderRadius,
+        ),
+
         border: Border.all(
           color: const Color(0xFF9BD4FF),
           width: 2,
         ),
+
         boxShadow: [
           BoxShadow(
             color: Colors.blue.withOpacity(0.12),
@@ -33,46 +63,64 @@ class MySearchResultCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(/**/
+
+      child: Row(
         children: [
-          Image.asset(
-            'assets/images/ic_research.png',
-            width: 30,
-            height: 30,
-          ),
-          const SizedBox(width: 15),
+
+          if (showSearchIcon) ...[
+            Image.asset(
+              'assets/images/ic_research.png',
+              width: iconSize,
+              height: iconSize,
+            ),
+
+            SizedBox(
+              width: height * 0.25,
+            ),
+          ],
+
           Expanded(
             child: _ResultColumn(
               title: '단어',
               value: input,
+              titleFontSize: titleFontSize,
+              valueFontSize: valueFontSize,
             ),
           ),
-          const VerticalDivider(
-            width: 10,
+
+          VerticalDivider(
+            width: height * 0.2,
             thickness: 1.4,
-            color: Color(0xFFB7DDF6),
-            indent: 18,
-            endIndent: 18,
+            color: const Color(0xFFB7DDF6),
+            indent: height * 0.25,
+            endIndent: height * 0.25,
           ),
+
           Expanded(
             child: _ResultColumn(
               title: '유사도',
               value: similarity,
               center: true,
+              titleFontSize: titleFontSize,
+              valueFontSize: valueFontSize,
             ),
           ),
-          const VerticalDivider(
-            width: 24,
+
+          VerticalDivider(
+            width: height * 0.2,
             thickness: 1.4,
-            color: Color(0xFFB7DDF6),
-            indent: 18,
-            endIndent: 18,
+            color: const Color(0xFFB7DDF6),
+            indent: height * 0.25,
+            endIndent: height * 0.25,
           ),
+
           Expanded(
             child: _ResultColumn(
               title: '순위',
-              value: '$rank',
+              value: rank,
               center: true,
+              titleFontSize: titleFontSize,
+              valueFontSize: valueFontSize,
             ),
           ),
         ],
@@ -84,11 +132,19 @@ class MySearchResultCard extends StatelessWidget {
 class _ResultColumn extends StatelessWidget {
   final String title;
   final String value;
+
   final bool center;
+
+  final double titleFontSize;
+  final double valueFontSize;
 
   const _ResultColumn({
     required this.title,
     required this.value,
+
+    required this.titleFontSize,
+    required this.valueFontSize,
+
     this.center = false,
   });
 
@@ -96,27 +152,39 @@ class _ResultColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
+
       crossAxisAlignment:
-          center ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      center
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
+
       children: [
+
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 12,
+
+          style: TextStyle(
+            fontSize: titleFontSize,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF4D4D4D),
+            color: const Color(0xFF4D4D4D),
           ),
         ),
-        const SizedBox(height: 3),
+
+        SizedBox(
+          height: titleFontSize * 0.2,
+        ),
+
         Text(
           value,
+
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           softWrap: false,
-          style: const TextStyle(
-            fontSize: 12,
+
+          style: TextStyle(
+            fontSize: valueFontSize,
             fontWeight: FontWeight.w900,
-            color: Color(0xFF1677D2),
+            color: const Color(0xFF1677D2),
           ),
         ),
       ],
