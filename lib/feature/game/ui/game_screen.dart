@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:leximatch/core/widget/box.dart';
-import 'package:leximatch/feature/game/data/dto/game_dto.dart';
+import 'package:leximatch/feature/game/domain/model/hint_dto.dart';
 import 'package:leximatch/feature/game/ui/providers/game_state_provider.dart';
+import 'package:leximatch/feature/game/ui/providers/hint_state_provider.dart';
 import 'package:leximatch/feature/game/ui/providers/state/game_ui_state.dart';
 import 'package:leximatch/feature/game/ui/widgets/card/research_card.dart';
 import 'package:leximatch/feature/game/ui/widgets/card/top5_result_card.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/correct_answer_dialog.dart';
+import 'package:leximatch/feature/game/ui/widgets/dialog/hint_dialog.dart';
+import 'package:leximatch/feature/game/ui/widgets/dialog/hint_result_dialog.dart';
 
 import '../../../core/ad/reward_manager.dart';
 import '../../../core/network/exception/api_exception.dart';
@@ -15,6 +18,7 @@ import '../../../core/router/route_path.dart';
 import '../../../core/style/colors.dart';
 import '../../../core/widget/button/lexi_game_button/lexi_game_button.dart';
 import '../../../core/widget/button/pressable_image_button.dart';
+import '../domain/model/game_dto.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen({super.key});
@@ -92,7 +96,6 @@ class GameBody extends StatelessWidget {
             ),
             SizedBox(height: 5),
             Expanded(
-
               child: ResultSection(),
             )
           ],
@@ -111,7 +114,6 @@ class InputSection extends ConsumerStatefulWidget {
 
 class _InputSectionState extends ConsumerState<InputSection> {
   final TextEditingController _textEditingController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
 
   bool _isInputError = false;
 
@@ -213,17 +215,13 @@ class ResultSection extends ConsumerWidget {
     final myResult = gameState.displayMyResult;
     final top5 = gameState.top5;
 
-
     final isWordNotInDictionary = gameState.isWordNotFound;
     return Padding(
       padding: EdgeInsets.only(
         left: 10,
         right: 10,
         top: 10,
-        bottom: MediaQuery
-            .of(context)
-            .padding
-            .bottom + 12,
+        bottom: MediaQuery.of(context).padding.bottom + 12,
       ),
       child: LexiMatchBox(
         padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
@@ -239,8 +237,8 @@ class ResultSection extends ConsumerWidget {
             ),
             MySearchResultCard(
               input: isWordNotInDictionary ? "-" : myResult.userInput,
-              similarity: isWordNotInDictionary ? "-" : myResult.dist
-                  .toString(),
+              similarity:
+                  isWordNotInDictionary ? "-" : myResult.dist.toString(),
               rank: isWordNotInDictionary ? "-" : myResult.ranking.toString(),
             ),
             if (isWordNotInDictionary)
@@ -276,7 +274,6 @@ class ResultSection extends ConsumerWidget {
   }
 }
 
-
 class LexiTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
@@ -296,14 +293,11 @@ class LexiTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       minLines: 1,
-
       style: const TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
-
       ),
-
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: Padding(
@@ -313,7 +307,6 @@ class LexiTextField extends StatelessWidget {
             width: 20,
             height: 20,
           ),
-
         ),
         suffixIcon: GestureDetector(
           onTap: onClear,
@@ -331,19 +324,14 @@ class LexiTextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: isError
-                ? Colors.red
-                : const Color(0xFFB8B0AA),
+            color: isError ? Colors.red : const Color(0xFFB8B0AA),
             width: 1.5,
           ),
         ),
-
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: isError
-                ? Colors.red
-                : AppColors.primary,
+            color: isError ? Colors.red : AppColors.primary,
             width: 1.8,
           ),
         ),
@@ -352,15 +340,14 @@ class LexiTextField extends StatelessWidget {
   }
 }
 
-
-class ResultHintCard extends StatefulWidget {
+class ResultHintCard extends ConsumerStatefulWidget  {
   const ResultHintCard({super.key});
 
   @override
-  State<ResultHintCard> createState() => _ResultHintCardState();
+  ConsumerState<ResultHintCard> createState() => _ResultHintCardState();
 }
 
-class _ResultHintCardState extends State<ResultHintCard> {
+class _ResultHintCardState extends ConsumerState<ResultHintCard> {
   late final RewardAdManager rewardAdManager;
 
   @override
@@ -374,6 +361,83 @@ class _ResultHintCardState extends State<ResultHintCard> {
   void dispose() {
     rewardAdManager.dispose();
     super.dispose();
+  }
+
+  void _showHintDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => HintDialog(
+        onAdWatch: _onAdWatch,
+        onCancel: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
+  void _onHintTap() {
+    _showHintDialog(context);
+  }
+
+  Future<void> _onAdWatch() async {
+    debugPrint("_onAdWatch 시작");
+    try {
+
+      final hint = await ref
+          .read(hintProvider.notifier)
+          .fetchHint();
+
+      if (hint == null) {
+        debugPrint( "힌트를 불러오지 못했어요");
+        return;
+      }
+      if (!mounted) return;
+
+      Navigator.pop(context);
+
+      _showRewardAd(hint);
+
+    } catch (e, st) {
+
+      debugPrint("힌트 조회 실패: $e");
+      debugPrintStack(stackTrace: st);
+      // TODO:
+      // 토스트 or 에러 다이얼로그
+    }
+  }
+
+  void _showRewardAd(HintDto hint) {
+    rewardAdManager.show(
+      onRewarded: () {
+        debugPrint("광고 시청 완료");
+
+        if (!mounted) return;
+
+        _showHintResultDialog(hint);
+      },
+      onNotReady: () {
+        debugPrint("광고 준비 안됨");
+      },
+      onFailedToShow: () {
+        debugPrint("광고 표시 실패");
+      },
+    );
+  }
+
+  void _showHintResultDialog(HintDto hint) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => HintResultDialog(
+        word: hint.userInput.toString(),
+        similarity: hint.dist.toString(),
+        ranking: hint.ranking.toString(),
+        onConfirm: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
   }
 
   @override
@@ -412,25 +476,14 @@ class _ResultHintCardState extends State<ResultHintCard> {
             text: "힌트 보기",
             width: 50,
             height: 15,
-            onTap: () {
-              rewardAdManager.show(
-                onRewarded: () {
-                  debugPrint("광고 시청 완료");
-                },
-                onNotReady: () {
-                  debugPrint("광고 준비 안됨");
-                },
-                onFailedToShow: () {
-                  debugPrint("광고 표시 실패");
-                },
-              );
-            },
+            onTap: _onHintTap,
           ),
         ],
       ),
     );
   }
 }
+
 Widget _buildTop5Section({
   required bool isServerError,
   required List<GameDto> top5,
@@ -455,9 +508,7 @@ Widget _buildServerError() {
           'assets/images/server_error_lodo.png', // 네가 넣을 이미지 경로
           width: 150,
         ),
-
         const SizedBox(height: 12),
-
         const Text(
           "서버 오류가 발생했습니다",
           textAlign: TextAlign.center,
@@ -467,9 +518,7 @@ Widget _buildServerError() {
             fontWeight: FontWeight.w700,
           ),
         ),
-
         const SizedBox(height: 4),
-
         const Text(
           "잠시 후 다시 시도해주세요",
           textAlign: TextAlign.center,
@@ -506,9 +555,9 @@ Widget _buildTop5List(List<GameDto> top5) {
           padding: const EdgeInsets.symmetric(vertical: 5),
           child: hasItem
               ? Top5ResultCard(
-            item: top5[index],
-            rank: index + 1,
-          )
+                  item: top5[index],
+                  rank: index + 1,
+                )
               : const SizedBox.expand(),
         ),
       );
@@ -529,14 +578,13 @@ void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) =>
-            CorrectAnswerDialog(
-              elapsedTime: currentResult.elapsedTime,
-              onConfirm: () {
-                Navigator.pop(context);
-                context.go(RoutePath.home);
-              },
-            ),
+        builder: (_) => CorrectAnswerDialog(
+          elapsedTime: currentResult.elapsedTime,
+          onConfirm: () {
+            Navigator.pop(context);
+            context.go(RoutePath.home);
+          },
+        ),
       );
     }
   });
