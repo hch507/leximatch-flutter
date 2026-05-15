@@ -52,7 +52,7 @@ class AppColors {
   // =========================
   //  sub Dialog
   // =========================
-
+  static const blueDialogBorder = Color(0xFF7CCBFF);
   // =========================
   // Blue Button
   // =========================

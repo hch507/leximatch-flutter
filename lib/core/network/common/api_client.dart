@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../exception/api_exception.dart';
 import 'api_response.dart';
@@ -22,9 +23,19 @@ class ApiClient {
         queryParameters: queryParameters,
         options: Options(method: method),
       );
+      debugPrint("=================================");
+      debugPrint("API PATH: $path");
+      debugPrint("API RESPONSE: ${response.data}");
+      debugPrint("=================================");
+
 
       return _parseResponse<T>(response.data, fromJson);
     } on DioException catch (e) {
+      debugPrint("=================================");
+      debugPrint("API ERROR PATH: $path");
+      debugPrint("API ERROR RESPONSE: ${e.response?.data}");
+      debugPrint("=================================");
+
       final errorData = e.response?.data;
 
       if (errorData is Map<String, dynamic>) {
@@ -43,7 +54,7 @@ class ApiClient {
       T Function(dynamic json) fromJson,
       ) {
     final apiResponse = ApiResponse<T>.fromJson(data, fromJson);
-
+    debugPrint("PARSE BODY: ${apiResponse.body}");
     if (apiResponse.result.resultCode == 200) {
       return apiResponse.body;
     }
@@ -52,6 +63,8 @@ class ApiClient {
   }
 
   Never _throwApiException(Map<String, dynamic> data) {
+    debugPrint("THROW API ERROR: $data");
+
     final apiResponse = ApiResponse<dynamic>.fromJson(
       data,
           (json) => json,
