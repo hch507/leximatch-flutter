@@ -6,7 +6,7 @@ class LexiDialog extends StatelessWidget {
   final Widget child;
 
   final String titleImagePath;
-  final double titleWidth;
+  final double titleHeight;
 
   final Color borderColor;
   final Color backgroundColor;
@@ -16,7 +16,7 @@ class LexiDialog extends StatelessWidget {
     required this.child,
     required this.titleImagePath,
 
-    this.titleWidth = 150,
+    this.titleHeight = 70,
 
     this.borderColor = AppColors.orangeDialogBorder,
 
@@ -25,6 +25,13 @@ class LexiDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final cardTopMargin =
+        titleHeight * 0.55;
+
+    final topPadding =
+        titleHeight * 0.35;
+
     return Dialog(
       backgroundColor: Colors.transparent,
 
@@ -40,11 +47,13 @@ class LexiDialog extends StatelessWidget {
 
           // 메인 카드
           Container(
-            margin: const EdgeInsets.only(top: 50),
+            margin: EdgeInsets.only(
+              top: cardTopMargin,
+            ),
 
-            padding: const EdgeInsets.fromLTRB(
+            padding: EdgeInsets.fromLTRB(
               20,
-              45,
+              topPadding,
               20,
               24,
             ),
@@ -77,7 +86,7 @@ class LexiDialog extends StatelessWidget {
 
             child: Image.asset(
               titleImagePath,
-              width: titleWidth,
+              height: titleHeight,
               fit: BoxFit.contain,
             ),
           ),
