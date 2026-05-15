@@ -18,14 +18,14 @@ class CorrectAnswerDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return LexiDialog(
       titleImagePath: 'assets/images/correct_comment_logo.png',
-      titleWidth: 310,
+      titleHeight: 150,
       borderColor: const Color(0xFFFFC95A),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
             'assets/images/ic_lodo_success.png',
-            height: 150,
+            height: 100,
             fit: BoxFit.contain,
           ),
 
