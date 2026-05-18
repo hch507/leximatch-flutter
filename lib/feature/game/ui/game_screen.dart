@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:leximatch/core/widget/box.dart';
+import 'package:leximatch/core/widget/button/lexi_game_button/lexi_game_button_type.dart';
 import 'package:leximatch/feature/game/domain/model/hint_dto.dart';
 import 'package:leximatch/feature/game/ui/providers/game_state_provider.dart';
 import 'package:leximatch/feature/game/ui/providers/hint_state_provider.dart';
@@ -112,18 +113,15 @@ class InputSection extends ConsumerStatefulWidget {
   const InputSection({super.key});
 
   @override
-  ConsumerState<InputSection> createState() =>
-      _InputSectionState();
+  ConsumerState<InputSection> createState() => _InputSectionState();
 }
 
-class _InputSectionState
-    extends ConsumerState<InputSection> {
-
-  final TextEditingController _textEditingController =
-  TextEditingController();
+class _InputSectionState extends ConsumerState<InputSection> {
+  final TextEditingController _textEditingController = TextEditingController();
 
   bool _isInputError = false;
-
+  double? height;
+  double? width;
   @override
   void initState() {
     super.initState();
@@ -141,37 +139,33 @@ class _InputSectionState
 
   @override
   Widget build(BuildContext context) {
-
     return LayoutBuilder(
       builder: (context, constraints) {
 
-        final width = constraints.maxWidth;
-        final height = constraints.maxHeight;
+        width = constraints.maxWidth;
+        height = constraints.maxHeight;
 
-        final buttonWidth = width * 0.42;
-        final buttonHeight = height * 0.26;
+        final buttonWidth = width! * 0.42;
+        final buttonHeight = height! * 0.26;
 
-        final dogHeight = height * 0.55;
-        final textFieldHeight = (height * 0.34).clamp(48.0, 58.0);
+        final dogHeight = height! * 0.55;
+        final textFieldHeight = (height! * 0.34).clamp(48.0, 58.0);
         return Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: width * 0.04,
+            horizontal: width! * 0.04,
           ),
           child: LexiMatchBox(
             padding: EdgeInsets.fromLTRB(
-              width * 0.03,
-              height * 0.03,
-              width * 0.03,
+              width! * 0.03,
+              height! * 0.03,
+              width! * 0.03,
               0,
             ),
             child: Column(
-              mainAxisAlignment:
-              MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 LexiTextField(
                   controller: _textEditingController,
                   onClear: () {
@@ -180,25 +174,17 @@ class _InputSectionState
                   },
                   isError: _isInputError,
                   height: textFieldHeight,
-
                 ),
-
-                SizedBox(height: height * 0.03),
-
+                SizedBox(height: height! * 0.03),
                 Row(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-
                     LexiGameButton(
                       text: "유사도 체크",
                       width: buttonWidth,
                       height: buttonHeight,
                       onTap: () {
-
-                        final text =
-                        _textEditingController.text
-                            .trim();
+                        final text = _textEditingController.text.trim();
 
                         if (text.isEmpty) {
                           setState(() {
@@ -213,20 +199,17 @@ class _InputSectionState
 
                         ref
                             .read(
-                          gameStateProvider.notifier,
-                        )
+                              gameStateProvider.notifier,
+                            )
                             .fetchSimilarity(text);
                       },
                     ),
-
-                    SizedBox(width: width * 0.03),
-
+                    SizedBox(width: width! * 0.03),
                     Expanded(
                       child: SizedBox(
                         height: dogHeight,
                         child: Align(
-                          alignment:
-                          Alignment.bottomCenter,
+                          alignment: Alignment.bottomCenter,
                           child: Image.asset(
                             "assets/images/ic_lodo_search.png",
                             fit: BoxFit.contain,
@@ -244,73 +227,168 @@ class _InputSectionState
     );
   }
 }
-class ResultSection extends ConsumerWidget {
+class ResultSection extends ConsumerStatefulWidget {
   const ResultSection({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    _listenCorrectAnswerDialog(context, ref);
-    final asyncState = ref.watch(gameStateProvider);
+  ConsumerState<ResultSection> createState() =>
+      _ResultSectionState();
+}
 
-    final gameState = asyncState.value ?? const GameUiState();
-    final myResult = gameState.displayMyResult;
+class _ResultSectionState
+    extends ConsumerState<ResultSection> {
+
+  double? _baseHeight;
+
+  @override
+  Widget build(BuildContext context) {
+
+    _listenCorrectAnswerDialog(context, ref);
+
+    final asyncState =
+    ref.watch(gameStateProvider);
+
+    final gameState =
+        asyncState.value ?? const GameUiState();
+
+    final myResult =
+        gameState.displayMyResult;
+
     final top5 = gameState.top5;
 
-    final isWordNotInDictionary = gameState.isWordNotFound;
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 10,
-        right: 10,
-        top: 10,
-        bottom: MediaQuery.of(context).padding.bottom + 12,
-      ),
-      child: LexiMatchBox(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Align(
-              alignment: const Alignment(-0.85, 0), // 시작점에서 약 10% 안쪽
-              child: Image.asset(
-                'assets/images/ic_my_research_title.png',
-                height: 20,
-              ),
+    final isWordNotInDictionary =
+        gameState.isWordNotFound;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+
+        // 최초 높이 저장
+        _baseHeight ??=
+            constraints.maxHeight;
+
+        final height = _baseHeight!;
+
+        final myCardHeight =
+            height * 0.13;
+
+        final icTitleHeight =
+            myCardHeight * 0.3;
+
+        final hintCardHeight =
+            height * 0.06;
+
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: MediaQuery.viewPaddingOf(context).bottom + 12,
+          ),
+          child: LexiMatchBox(
+            padding:
+            const EdgeInsets.fromLTRB(
+              12,
+              10,
+              12,
+              10,
             ),
-            MySearchResultCard(
-              input: isWordNotInDictionary ? "-" : myResult.userInput,
-              similarity:
-                  isWordNotInDictionary ? "-" : myResult.dist.toString(),
-              rank: isWordNotInDictionary ? "-" : myResult.ranking.toString(),
-            ),
-            if (isWordNotInDictionary)
-              const Padding(
-                padding: EdgeInsets.only(top: 2, left: 18),
-                child: Text(
-                  '단어를 찾지 못했습니다',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
+            child: Column(
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
+              children: [
+
+                Align(
+                  alignment:
+                  const Alignment(-0.85, 0),
+                  child: Image.asset(
+                    'assets/images/ic_my_research_title.png',
+                    height: icTitleHeight,
                   ),
                 ),
-              ),
-            const Divider(
-              height: 24,
-              thickness: 1.2,
-              color: Color(0xFFE3D7BE),
-              indent: 18,
-              endIndent: 18,
+
+                SizedBox(
+                  height: myCardHeight,
+                  child: MySearchResultCard(
+                    input:
+                    isWordNotInDictionary
+                        ? "-"
+                        : myResult
+                        .userInput,
+
+                    similarity:
+                    isWordNotInDictionary
+                        ? "-"
+                        : myResult.dist
+                        .toString(),
+
+                    rank:
+                    isWordNotInDictionary
+                        ? "-"
+                        : myResult
+                        .ranking
+                        .toString(),
+                  ),
+                ),
+
+                SizedBox(
+                  height: 16,
+                  child: Visibility(
+                    visible:
+                    isWordNotInDictionary,
+                    maintainSize: true,
+                    maintainAnimation:
+                    true,
+                    maintainState: true,
+                    child: const Padding(
+                      padding:
+                      EdgeInsets.only(
+                        left: 18,
+                      ),
+                      child: Align(
+                        alignment:
+                        Alignment
+                            .centerLeft,
+                        child: Text(
+                          '단어를 찾지 못했습니다',
+                          style: TextStyle(
+                            color:
+                            Colors.red,
+                            fontSize: 10,
+                            fontWeight:
+                            FontWeight
+                                .w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const Divider(
+                  height: 24,
+                  thickness: 1.2,
+                  color:
+                  Color(0xFFE3D7BE),
+                  indent: 18,
+                  endIndent: 18,
+                ),
+
+                Expanded(
+                  child: _buildTop5Section(
+                    isServerError:
+                    asyncState.hasError,
+                    top5: top5,
+                  ),
+                ),
+
+                ResultHintCard(
+                  height: hintCardHeight,
+                ),
+              ],
             ),
-            Expanded(
-              child: _buildTop5Section(
-                isServerError: asyncState.hasError,
-                top5: top5,
-              ),
-            ),
-            const ResultHintCard()
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -390,7 +468,12 @@ class LexiTextField extends StatelessWidget {
 }
 
 class ResultHintCard extends ConsumerStatefulWidget {
-  const ResultHintCard({super.key});
+  final double height;
+
+  const ResultHintCard({
+    super.key,
+    required this.height,
+  });
 
   @override
   ConsumerState<ResultHintCard> createState() => _ResultHintCardState();
@@ -486,43 +569,58 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFAED),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFFEFD8A8),
-          width: 1.2,
+    final height = widget.height;
+
+    final iconSize = (height * 0.35).clamp(14.0, 20.0);
+    final fontSize = (height * 0.24).clamp(10.0, 13.0);
+    final buttonWidth = (height * 1.35).clamp(50.0, 70.0);
+    final buttonHeight = (height * 0.42).clamp(16.0, 24.0);
+
+    return SizedBox(
+      height: height,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: height * 0.30,
+          vertical: height * 0.10,
         ),
-      ),
-      child: Row(
-        children: [
-          Image.asset(
-            'assets/images/ic_hint.png',
-            width: 15,
-            height: 15,
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFFAED),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: const Color(0xFFEFD8A8),
+            width: 1.2,
           ),
-          const SizedBox(width: 10),
-          const Expanded(
-            child: Text(
-              '매일 정각 정답 단어가 변경돼요!',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF4A3A2A),
+        ),
+        child: Row(
+          children: [
+            Image.asset(
+              'assets/images/ic_hint.png',
+              width: iconSize,
+              height: iconSize,
+            ),
+            SizedBox(width: height * 0.22),
+            Expanded(
+              child: Text(
+                '매일 정각 정답 단어가 변경돼요!',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF4A3A2A),
+                ),
               ),
             ),
-          ),
-          LexiGameButton(
-            text: "힌트 보기",
-            width: 50,
-            height: 15,
-            onTap: _onHintTap,
-          ),
-        ],
+            LexiGameButton(
+              text: "힌트 보기",
+              useShadow: false,
+              type: LexiButtonType.blue,
+              width: buttonWidth,
+              height: buttonHeight,
+              onTap: _onHintTap,
+            ),
+          ],
+        ),
       ),
     );
   }
