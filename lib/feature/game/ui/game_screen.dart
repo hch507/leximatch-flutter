@@ -26,9 +26,7 @@ class GameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       resizeToAvoidBottomInset: false,
-      appBar: const GameAppBar(),
       body: GameBody(),
     );
   }
@@ -43,7 +41,9 @@ class GameAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+      ),
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -90,6 +90,9 @@ class GameBody extends StatelessWidget {
       child: SafeArea(
         child: const Column(
           children: [
+            // 직접 넣기
+            GameAppBar(),
+            const SizedBox(height: 8),
             SizedBox(
               height: 150,
               child: InputSection(),
@@ -340,7 +343,7 @@ class LexiTextField extends StatelessWidget {
   }
 }
 
-class ResultHintCard extends ConsumerStatefulWidget  {
+class ResultHintCard extends ConsumerStatefulWidget {
   const ResultHintCard({super.key});
 
   @override
@@ -383,13 +386,10 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
   Future<void> _onAdWatch() async {
     debugPrint("_onAdWatch 시작");
     try {
-
-      final hint = await ref
-          .read(hintProvider.notifier)
-          .fetchHint();
+      final hint = await ref.read(hintProvider.notifier).fetchHint();
 
       if (hint == null) {
-        debugPrint( "힌트를 불러오지 못했어요");
+        debugPrint("힌트를 불러오지 못했어요");
         return;
       }
       if (!mounted) return;
@@ -397,9 +397,7 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
       Navigator.pop(context);
 
       _showRewardAd(hint);
-
     } catch (e, st) {
-
       debugPrint("힌트 조회 실패: $e");
       debugPrintStack(stackTrace: st);
       // TODO:
@@ -462,7 +460,7 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
           const SizedBox(width: 10),
           const Expanded(
             child: Text(
-              '매일 정각 정답 단어가 변경되요!',
+              '매일 정각 정답 단어가 변경돼요!',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
