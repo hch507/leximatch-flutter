@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-import '../../../style/colors.dart';
 import '../../text.dart';
 import 'lexi_game_button_style.dart';
 import 'lexi_game_button_type.dart';
@@ -12,6 +10,9 @@ class LexiGameButton extends StatefulWidget {
   final double? height;
   final LexiButtonType type;
 
+  // 추가
+  final bool useShadow;
+
   const LexiGameButton({
     super.key,
     required this.text,
@@ -19,24 +20,31 @@ class LexiGameButton extends StatefulWidget {
     this.width,
     this.height,
     this.type = LexiButtonType.orange,
+
+    // 기본값 true
+    this.useShadow = true,
   });
 
   @override
-  State<LexiGameButton> createState() => _LexiGameButtonState();
+  State<LexiGameButton> createState() =>
+      _LexiGameButtonState();
 }
 
-class _LexiGameButtonState extends State<LexiGameButton> {
+class _LexiGameButtonState
+    extends State<LexiGameButton> {
+
   bool _pressed = false;
 
   @override
   Widget build(BuildContext context) {
-    final style = LexiButtonStyle.of(widget.type);
+
+    final style =
+    LexiButtonStyle.of(widget.type);
 
     final fontSize =
         (widget.height ?? 60) * 0.38;
 
-    final strokeWidth =
-        fontSize/5;
+    final strokeWidth = fontSize / 5;
 
     final buttonColors = _pressed
         ? style.pressedColors
@@ -46,7 +54,10 @@ class _LexiGameButtonState extends State<LexiGameButton> {
         ? style.pressedBorderColor
         : style.borderColor;
 
-    final shadows = _pressed
+    // shadow 조건 처리
+    final shadows = !widget.useShadow
+        ? <BoxShadow>[]
+        : _pressed
         ? [
       BoxShadow(
         color: style.shadowColor,
@@ -90,7 +101,7 @@ class _LexiGameButtonState extends State<LexiGameButton> {
         height: widget.height,
         transform: Matrix4.translationValues(
           0,
-          _pressed ? 3 : 0,
+          _pressed && widget.useShadow ? 3 : 0,
           0,
         ),
         decoration: BoxDecoration(
