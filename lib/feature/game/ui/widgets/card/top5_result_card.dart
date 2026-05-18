@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 import '../../../domain/model/game_dto.dart';
 import '../../style/rank_style.dart';
 
@@ -21,12 +20,10 @@ class Top5ResultCard extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-
         final height = constraints.maxHeight;
 
-        final inputFontSize = height * 0.30;
-        final labelFontSize = height * 0.22;
-        final valueFontSize = height * 0.26;
+        final inputFontSize = height * 0.20;
+        final valueFontSize = height * 0.20;
 
         return SizedBox.expand(
           child: Container(
@@ -44,7 +41,14 @@ class Top5ResultCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-
+                SizedBox(
+                  height: height * 0.4,
+                  child: Image.asset(
+                    style.medalAsset,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(width: 4),
                 Expanded(
                   flex: 3,
                   child: Text(
@@ -58,30 +62,35 @@ class Top5ResultCard extends StatelessWidget {
                     ),
                   ),
                 ),
-
-
+                VerticalDivider(
+                  width: height * 0.2,
+                  thickness: 1.4,
+                  color: style.dividerColor,
+                  indent: height * 0.25,
+                  endIndent: height * 0.25,
+                ),
                 Expanded(
                   flex: 3,
                   child: _CardText(
-                    label: '유사도',
                     value: item.dist.toString(),
                     valueColor: style.pointColor,
                     center: true,
-                    labelFontSize: labelFontSize,
                     valueFontSize: valueFontSize,
                   ),
                 ),
-
-
-
+                VerticalDivider(
+                  width: height * 0.2,
+                  thickness: 1.4,
+                  color: style.dividerColor,
+                  indent: height * 0.25,
+                  endIndent: height * 0.25,
+                ),
                 Expanded(
                   flex: 3,
                   child: _CardText(
-                    label: '순위',
                     value: '${item.ranking} 위',
                     valueColor: style.pointColor,
                     center: true,
-                    labelFontSize: labelFontSize,
                     valueFontSize: valueFontSize,
                   ),
                 ),
@@ -95,19 +104,15 @@ class Top5ResultCard extends StatelessWidget {
 }
 
 class _CardText extends StatelessWidget {
-  final String label;
   final String value;
   final Color valueColor;
   final bool center;
 
-  final double labelFontSize;
   final double valueFontSize;
 
   const _CardText({
-    required this.label,
     required this.value,
     required this.valueColor,
-    required this.labelFontSize,
     required this.valueFontSize,
     this.center = false,
   });
@@ -118,15 +123,6 @@ class _CardText extends StatelessWidget {
       mainAxisAlignment:
           center ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: labelFontSize,
-            fontWeight: FontWeight.w800,
-            color: const Color(0xFF3F3A35),
-          ),
-        ),
-        const SizedBox(height: 3),
         Flexible(
           child: Text(
             value,
