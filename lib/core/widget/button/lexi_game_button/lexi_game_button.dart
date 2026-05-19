@@ -42,7 +42,7 @@ class _LexiGameButtonState
     LexiButtonStyle.of(widget.type);
 
     final fontSize =
-        (widget.height ?? 60) * 0.38;
+        (widget.height ?? 60) * 0.42;
 
     final strokeWidth = fontSize / 5;
 
