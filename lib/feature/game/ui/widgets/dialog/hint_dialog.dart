@@ -26,7 +26,7 @@ class HintDialog extends StatelessWidget {
         children: [
           SizedBox(height: 15,),
           const Text(
-            '광고를 시청 후\n힌트를 확인할 수 있어요!',
+            '광고 시청 후\n힌트를 확인할 수 있어요!',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 22,
@@ -39,7 +39,7 @@ class HintDialog extends StatelessWidget {
           const SizedBox(height: 10),
 
           const Text(
-            '힌트에는 단어, 유사도, 랭킹 정보가 포함돼요',
+            '유사도 랭킹 10 ~ 200위 사이의\n단어가 제공됩니다.!',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
