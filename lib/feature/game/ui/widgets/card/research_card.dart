@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +29,7 @@ class MySearchResultCard extends StatelessWidget {
         height * 0.20;
 
     final valueFontSize =
-        height * 0.22;
+        height * 0.20;
 
     final iconSize =
         height * 0.5;
@@ -176,14 +177,12 @@ class _ResultColumn extends StatelessWidget {
 
         Text(
           value,
-
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           softWrap: false,
-
           style: TextStyle(
             fontSize: valueFontSize,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w600,
             color: const Color(0xFF1677D2),
           ),
         ),
