@@ -29,7 +29,7 @@ class MySearchResultCard extends StatelessWidget {
         height * 0.20;
 
     final valueFontSize =
-        height * 0.20;
+        height * 0.22;
 
     final iconSize =
         height * 0.5;
@@ -182,7 +182,7 @@ class _ResultColumn extends StatelessWidget {
           softWrap: false,
           style: TextStyle(
             fontSize: valueFontSize,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w900,
             color: const Color(0xFF1677D2),
           ),
         ),
