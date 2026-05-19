@@ -306,28 +306,108 @@ class _ResultSectionState
                     height: icTitleHeight,
                   ),
                 ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 360),
 
-                SizedBox(
-                  height: myCardHeight,
-                  child: MySearchResultCard(
-                    input:
-                    isWordNotInDictionary
-                        ? "-"
-                        : myResult
-                        .userInput,
+                  transitionBuilder: (child, animation) {
 
-                    similarity:
-                    isWordNotInDictionary
-                        ? "-"
-                        : myResult.dist
-                        .toString(),
+                    final scaleAnimation = Tween<double>(
+                      begin: 0.92,
+                      end: 1.0,
+                    ).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeOutBack,
+                      ),
+                    );
 
-                    rank:
-                    isWordNotInDictionary
-                        ? "-"
-                        : myResult
-                        .ranking
-                        .toString(),
+                    final glowAnimation = Tween<double>(
+                      begin: 0,
+                      end: 22,
+                    ).animate(
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeOut,
+                      ),
+                    );
+
+                    return AnimatedBuilder(
+                      animation: animation,
+
+                      builder: (context, childWidget) {
+
+                        return FadeTransition(
+                          opacity: animation,
+
+                          child: Transform.scale(
+                            scale: scaleAnimation.value,
+
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(24),
+
+                                boxShadow: [
+
+                                  // 메인 블루 glow
+                                  BoxShadow(
+                                    color: const Color(0xFF7DD8FF)
+                                        .withOpacity(
+                                      0.32 * animation.value,
+                                    ),
+
+                                    blurRadius: glowAnimation.value,
+
+                                    spreadRadius:
+                                    glowAnimation.value * 0.08,
+                                  ),
+
+                                  // 하얀빛 보조 glow
+                                  BoxShadow(
+                                    color: Colors.white.withOpacity(
+                                      0.12 * animation.value,
+                                    ),
+
+                                    blurRadius:
+                                    glowAnimation.value * 0.5,
+                                  ),
+                                ],
+                              ),
+
+                              child: childWidget,
+                            ),
+                          ),
+                        );
+                      },
+
+                      child: child,
+                    );
+                  },
+
+                  child: SizedBox(
+                    key: ValueKey(
+                      isWordNotInDictionary
+                          ? 'not-found'
+                          : '${myResult.userInput}_${myResult.ranking}_${myResult.dist}',
+                    ),
+
+                    height: myCardHeight,
+
+                    child: MySearchResultCard(
+                      input:
+                      isWordNotInDictionary
+                          ? "-"
+                          : myResult.userInput,
+
+                      similarity:
+                      isWordNotInDictionary
+                          ? "-"
+                          : myResult.dist.toString(),
+
+                      rank:
+                      isWordNotInDictionary
+                          ? "-"
+                          : myResult.ranking.toString(),
+                    ),
                   ),
                 ),
 
