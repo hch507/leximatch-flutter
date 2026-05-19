@@ -19,6 +19,7 @@ import '../../../core/router/route_path.dart';
 import '../../../core/style/colors.dart';
 import '../../../core/widget/button/lexi_game_button/lexi_game_button.dart';
 import '../../../core/widget/button/pressable_image_button.dart';
+import '../../../core/widget/toast.dart';
 import '../domain/model/game_dto.dart';
 
 class GameScreen extends StatelessWidget {
@@ -146,7 +147,7 @@ class _InputSectionState extends ConsumerState<InputSection> {
         height = constraints.maxHeight;
 
         final buttonWidth = width! * 0.42;
-        final buttonHeight = height! * 0.26;
+        final buttonHeight = height! * 0.30;
 
         final dogHeight = height! * 0.55;
         final textFieldHeight = (height! * 0.34).clamp(48.0, 58.0);
@@ -530,7 +531,7 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
       debugPrint("힌트 조회 실패: $e");
       debugPrintStack(stackTrace: st);
       // TODO:
-      // 토스트 or 에러 다이얼로그
+      showToast("서버 오류가 발생했습니다.");
     }
   }
 
@@ -548,6 +549,7 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
       },
       onFailedToShow: () {
         debugPrint("광고 표시 실패");
+        showToast("광고 로드에 실패했습니다.");
       },
     );
   }
@@ -612,7 +614,7 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
               ),
             ),
             LexiGameButton(
-              text: "힌트 보기",
+              text: "힌트",
               useShadow: false,
               type: LexiButtonType.blue,
               width: buttonWidth,
