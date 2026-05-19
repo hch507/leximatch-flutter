@@ -4,6 +4,7 @@ import '../../../../../core/style/colors.dart';
 import '../../../../../core/widget/button/lexi_game_button/lexi_game_button.dart';
 import '../../../../../core/widget/button/lexi_game_button/lexi_game_button_type.dart';
 import '../../../../../core/widget/dialog.dart';
+import '../card/hint_result_card.dart';
 import '../card/research_card.dart';
 
 class HintResultDialog extends StatelessWidget {
@@ -56,12 +57,10 @@ class HintResultDialog extends StatelessWidget {
                 ],
               ),
             ),
-            MySearchResultCard(
+            HintResultCard(
               input: word,
               similarity: similarity,
               rank: ranking,
-              height: 70,
-              showSearchIcon: false,
             ),
 
             const SizedBox(height: 22),
