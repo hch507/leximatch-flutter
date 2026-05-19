@@ -22,7 +22,7 @@ class Top5ResultCard extends StatelessWidget {
       builder: (context, constraints) {
         final height = constraints.maxHeight;
 
-        final inputFontSize = height * 0.20;
+        final inputFontSize = height * 0.30;
         final valueFontSize = height * 0.20;
 
         return SizedBox.expand(
