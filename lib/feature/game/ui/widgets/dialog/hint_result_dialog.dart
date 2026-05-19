@@ -29,9 +29,10 @@ class HintResultDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: 10),
             Image.asset(
               'assets/images/ic_hint_lodo.png',
-              height: 80,
+              height: 100,
               fit: BoxFit.contain,
             ),
             const SizedBox(height: 10),
@@ -57,6 +58,7 @@ class HintResultDialog extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 10),
             HintResultCard(
               input: word,
               similarity: similarity,

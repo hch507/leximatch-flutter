@@ -24,6 +24,7 @@ class HintDialog extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          SizedBox(height: 15,),
           const Text(
             '광고를 시청 후\n힌트를 확인할 수 있어요!',
             textAlign: TextAlign.center,
