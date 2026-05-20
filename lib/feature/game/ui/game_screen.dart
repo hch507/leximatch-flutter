@@ -276,7 +276,7 @@ class _ResultSectionState
             myCardHeight * 0.3;
 
         final hintCardHeight =
-            height * 0.06;
+            height * 0.08;
 
         return Padding(
           padding: EdgeInsets.only(
@@ -656,7 +656,7 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
     final iconSize = (height * 0.35).clamp(14.0, 20.0);
     final fontSize = (height * 0.24).clamp(10.0, 13.0);
     final buttonWidth = (height * 1.35).clamp(50.0, 70.0);
-    final buttonHeight = (height * 0.42).clamp(16.0, 24.0);
+    final buttonHeight = (height * 0.6).clamp(16.0, 24.0);
 
     return SizedBox(
       height: height,
