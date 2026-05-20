@@ -17,12 +17,18 @@ class RewardAdManager {
   String get _adUnitId {
     if (Platform.isIOS) {
       // iOS Rewarded Test ID
-      return 'ca-app-pub-3940256099942544/1712485313';
+      //TEST
+      // return 'ca-app-pub-3940256099942544/1712485313';
+      //Release
+      return 'ca-app-pub-4893971090777365/9414099397';
     }
 
     if (Platform.isAndroid) {
       // Android Rewarded Test ID
-      return 'ca-app-pub-3940256099942544/5224354917';
+      //TEST
+      // return 'ca-app-pub-3940256099942544/5224354917';
+      //Release
+      return 'ca-app-pub-4893971090777365/2054484126';
     }
 
     throw UnsupportedError('Unsupported platform');
