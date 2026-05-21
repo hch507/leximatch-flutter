@@ -39,7 +39,7 @@ class HintDialog extends StatelessWidget {
           const SizedBox(height: 10),
 
           const Text(
-            '유사도 랭킹 10 ~ 200위 사이의\n단어가 제공됩니다.!',
+            '유사도 순위 10 ~ 200위 사이의\n단어가 제공됩니다.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
