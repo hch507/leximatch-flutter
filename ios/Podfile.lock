@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - fluttertoast (0.0.2):
+    - Flutter
   - Google-Mobile-Ads-SDK (13.2.0):
     - GoogleUserMessagingPlatform (>= 1.1)
   - google_mobile_ads (8.0.0):
@@ -13,6 +15,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_mobile_ads (from `.symlinks/plugins/google_mobile_ads/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
@@ -24,6 +27,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  fluttertoast:
+    :path: ".symlinks/plugins/fluttertoast/ios"
   google_mobile_ads:
     :path: ".symlinks/plugins/google_mobile_ads/ios"
   webview_flutter_wkwebview:
@@ -31,6 +36,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  fluttertoast: 21eecd6935e7064cc1fcb733a4c5a428f3f24f0f
   Google-Mobile-Ads-SDK: f0365e190d66539c65cea8ded43e2c367abb5477
   google_mobile_ads: 504fb83892207cb9ab7223e13ad6090e6f63d62b
   GoogleUserMessagingPlatform: befe603da6501006420c206222acd449bba45a9c
