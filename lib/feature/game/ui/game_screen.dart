@@ -624,8 +624,14 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
 
         _showHintResultDialog(hint);
       },
+      onLoading: (){
+        showToast("광고 준비중.");
+      },
+      onLoadFailed: (){
+        showToast("광고 로드 실채");
+      },
       onNotReady: () {
-        debugPrint("광고 준비 안됨");
+        showToast("광고 준비 안됨");
       },
       onFailedToShow: () {
         debugPrint("광고 표시 실패");

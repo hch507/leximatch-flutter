@@ -3,31 +3,44 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+enum RewardAdState {
+  idle,
+  loading,
+  loaded,
+  failed,
+  showing,
+}
+
 class RewardAdManager {
   RewardedAd? _rewardedAd;
 
-  bool _isLoading = false;
-  bool _isShowing = false;
+  RewardAdState _state = RewardAdState.idle;
+  LoadAdError? _lastLoadError;
+
   bool _disposed = false;
 
   bool get isReady => _rewardedAd != null;
-  bool get isLoading => _isLoading;
-  bool get isShowing => _isShowing;
+  bool get isLoading => _state == RewardAdState.loading;
+  bool get isShowing => _state == RewardAdState.showing;
+  bool get isFailed => _state == RewardAdState.failed;
+
+  RewardAdState get state => _state;
+  LoadAdError? get lastLoadError => _lastLoadError;
 
   String get _adUnitId {
     if (Platform.isIOS) {
-      // iOS Rewarded Test ID
-      //TEST
+      // TEST
       // return 'ca-app-pub-3940256099942544/1712485313';
-      //Release
+
+      // RELEASE
       return 'ca-app-pub-4893971090777365/9414099397';
     }
 
     if (Platform.isAndroid) {
-      // Android Rewarded Test ID
-      //TEST
+      // TEST
       // return 'ca-app-pub-3940256099942544/5224354917';
-      //Release
+
+      // RELEASE
       return 'ca-app-pub-4893971090777365/2054484126';
     }
 
@@ -36,9 +49,11 @@ class RewardAdManager {
 
   void load() {
     if (_disposed) return;
-    if (_isLoading || _rewardedAd != null) return;
+    if (_state == RewardAdState.loading) return;
+    if (_rewardedAd != null) return;
 
-    _isLoading = true;
+    _state = RewardAdState.loading;
+    _lastLoadError = null;
 
     RewardedAd.load(
       adUnitId: _adUnitId,
@@ -50,13 +65,22 @@ class RewardAdManager {
             return;
           }
 
-          _isLoading = false;
           _rewardedAd = ad;
+          _state = RewardAdState.loaded;
+          _lastLoadError = null;
+
           debugPrint('RewardedAd loaded');
         },
         onAdFailedToLoad: (error) {
-          _isLoading = false;
-          debugPrint('RewardedAd load failed: $error');
+          _rewardedAd = null;
+          _state = RewardAdState.failed;
+          _lastLoadError = error;
+
+          debugPrint(
+            'RewardedAd load failed: '
+                'code=${error.code}, '
+                'message=${error.message}',
+          );
         },
       ),
     );
@@ -64,37 +88,56 @@ class RewardAdManager {
 
   void show({
     required VoidCallback onRewarded,
+    VoidCallback? onLoading,
+    VoidCallback? onLoadFailed,
     VoidCallback? onNotReady,
     VoidCallback? onFailedToShow,
     VoidCallback? onDismissed,
   }) {
     if (_disposed) return;
-    if (_isShowing) return;
+    if (_state == RewardAdState.showing) return;
 
     final ad = _rewardedAd;
 
     if (ad == null) {
+      if (_state == RewardAdState.loading) {
+        onLoading?.call();
+        return;
+      }
+
+      if (_state == RewardAdState.failed) {
+        onLoadFailed?.call();
+        load();
+        return;
+      }
+
       onNotReady?.call();
       load();
       return;
     }
 
     _rewardedAd = null;
-    _isShowing = true;
+    _state = RewardAdState.showing;
 
     ad.fullScreenContentCallback = FullScreenContentCallback(
       onAdDismissedFullScreenContent: (ad) {
-        _isShowing = false;
         ad.dispose();
+
+        _state = RewardAdState.idle;
 
         onDismissed?.call();
         load();
       },
       onAdFailedToShowFullScreenContent: (ad, error) {
-        _isShowing = false;
         ad.dispose();
 
-        debugPrint('RewardedAd show failed: $error');
+        _state = RewardAdState.failed;
+
+        debugPrint(
+          'RewardedAd show failed: '
+              'code=${error.code}, '
+              'message=${error.message}',
+        );
 
         onFailedToShow?.call();
         load();
@@ -110,7 +153,11 @@ class RewardAdManager {
 
   void dispose() {
     _disposed = true;
+
     _rewardedAd?.dispose();
     _rewardedAd = null;
+
+    _state = RewardAdState.idle;
+    _lastLoadError = null;
   }
 }
