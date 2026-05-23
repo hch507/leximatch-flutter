@@ -15,17 +15,18 @@ class RewardAdManager {
   RewardedAd? _rewardedAd;
 
   RewardAdState _state = RewardAdState.idle;
-  LoadAdError? _lastLoadError;
 
   bool _disposed = false;
 
   bool get isReady => _rewardedAd != null;
+
   bool get isLoading => _state == RewardAdState.loading;
+
   bool get isShowing => _state == RewardAdState.showing;
+
   bool get isFailed => _state == RewardAdState.failed;
 
   RewardAdState get state => _state;
-  LoadAdError? get lastLoadError => _lastLoadError;
 
   String get _adUnitId {
     if (Platform.isIOS) {
@@ -53,7 +54,6 @@ class RewardAdManager {
     if (_rewardedAd != null) return;
 
     _state = RewardAdState.loading;
-    _lastLoadError = null;
 
     RewardedAd.load(
       adUnitId: _adUnitId,
@@ -67,20 +67,18 @@ class RewardAdManager {
 
           _rewardedAd = ad;
           _state = RewardAdState.loaded;
-          _lastLoadError = null;
 
           debugPrint('RewardedAd loaded');
         },
         onAdFailedToLoad: (error) {
           _rewardedAd = null;
           _state = RewardAdState.failed;
-          _lastLoadError = error;
 
-          debugPrint(
-            'RewardedAd load failed: '
-                'code=${error.code}, '
-                'message=${error.message}',
-          );
+          final message = '광고 로드 실패\n'
+              'code=${error.code}\n'
+              '${error.message}';
+
+          debugPrint(message);
         },
       ),
     );
@@ -135,8 +133,8 @@ class RewardAdManager {
 
         debugPrint(
           'RewardedAd show failed: '
-              'code=${error.code}, '
-              'message=${error.message}',
+          'code=${error.code}, '
+          'message=${error.message}',
         );
 
         onFailedToShow?.call();
@@ -158,6 +156,5 @@ class RewardAdManager {
     _rewardedAd = null;
 
     _state = RewardAdState.idle;
-    _lastLoadError = null;
   }
 }
