@@ -4,13 +4,27 @@ class HintResultCard extends StatelessWidget {
   final String input;
   final String similarity;
   final String rank;
+
   final double minHeight;
+
+  final Color backgroundColor;
+  final Color borderColor;
+  final Color dividerColor;
+  final Color titleColor;
+  final Color pointTextColor;
 
   const HintResultCard({
     super.key,
     required this.input,
     required this.similarity,
     required this.rank,
+
+    required this.backgroundColor,
+    required this.borderColor,
+    required this.dividerColor,
+    required this.titleColor,
+    required this.pointTextColor,
+
     this.minHeight = 120,
   });
 
@@ -23,41 +37,50 @@ class HintResultCard extends StatelessWidget {
       constraints: BoxConstraints(
         minHeight: minHeight,
       ),
+
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
         vertical: 14,
       ),
+
       decoration: BoxDecoration(
-        color: const Color(0xFFEAF7FF),
+        color: backgroundColor,
+
         borderRadius: BorderRadius.circular(18),
+
         border: Border.all(
-          color: const Color(0xFF9BD4FF),
+          color: borderColor,
           width: 2,
         ),
+
         boxShadow: [
           BoxShadow(
-            color: Colors.blue.withOpacity(0.12),
+            color: borderColor.withOpacity(0.18),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
         ],
       ),
+
       child: Column(
         mainAxisSize: MainAxisSize.min,
+
         children: [
           _ResultRow(
             title: '단어',
             value: input,
             titleFontSize: titleFontSize,
             valueFontSize: valueFontSize,
+            titleColor: titleColor,
+            valueColor: pointTextColor,
           ),
 
           const SizedBox(height: 10),
 
-          const Divider(
+          Divider(
             height: 1,
             thickness: 1,
-            color: Color(0xFFB7DDF6),
+            color: dividerColor,
           ),
 
           const SizedBox(height: 10),
@@ -67,14 +90,16 @@ class HintResultCard extends StatelessWidget {
             value: similarity,
             titleFontSize: titleFontSize,
             valueFontSize: valueFontSize,
+            titleColor: titleColor,
+            valueColor: pointTextColor,
           ),
 
           const SizedBox(height: 10),
 
-          const Divider(
+          Divider(
             height: 1,
             thickness: 1,
-            color: Color(0xFFB7DDF6),
+            color: dividerColor,
           ),
 
           const SizedBox(height: 10),
@@ -84,12 +109,15 @@ class HintResultCard extends StatelessWidget {
             value: rank,
             titleFontSize: titleFontSize,
             valueFontSize: valueFontSize,
+            titleColor: titleColor,
+            valueColor: pointTextColor,
           ),
         ],
       ),
     );
   }
 }
+
 class _ResultRow extends StatelessWidget {
   final String title;
   final String value;
@@ -97,11 +125,16 @@ class _ResultRow extends StatelessWidget {
   final double titleFontSize;
   final double valueFontSize;
 
+  final Color titleColor;
+  final Color valueColor;
+
   const _ResultRow({
     required this.title,
     required this.value,
     required this.titleFontSize,
     required this.valueFontSize,
+    required this.titleColor,
+    required this.valueColor,
   });
 
   @override
@@ -110,12 +143,14 @@ class _ResultRow extends StatelessWidget {
       children: [
         SizedBox(
           width: 52,
+
           child: Text(
             title,
+
             style: TextStyle(
               fontSize: titleFontSize,
               fontWeight: FontWeight.w800,
-              color: const Color(0xFF4D4D4D),
+              color: titleColor,
             ),
           ),
         ),
@@ -129,10 +164,11 @@ class _ResultRow extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             softWrap: false,
             textAlign: TextAlign.right,
+
             style: TextStyle(
               fontSize: valueFontSize,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF1677D2),
+              fontWeight: FontWeight.w800,
+              color: valueColor,
             ),
           ),
         ),

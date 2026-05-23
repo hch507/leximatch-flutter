@@ -4,6 +4,7 @@ import '../../../../../core/style/colors.dart';
 import '../../../../../core/widget/button/lexi_game_button/lexi_game_button.dart';
 import '../../../../../core/widget/button/lexi_game_button/lexi_game_button_type.dart';
 import '../../../../../core/widget/dialog.dart';
+import '../../style/hint_result_dialog_style.dart';
 import '../card/hint_result_card.dart';
 import '../card/research_card.dart';
 
@@ -22,10 +23,14 @@ class HintResultDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final rank = int.tryParse(ranking) ?? 999;
+    final style = HintResultDialogStyle.of(rank);
+
     return LexiDialog(
-        borderColor: AppColors.blueDialogBorder,
-        titleImagePath: 'assets/images/ic_hint_title.png',
+        borderColor: style.borderColor,
+        titleImagePath: style.titleAsset,
         titleHeight: 50,
+        backgroundImagePath: style.backgroundAsset,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -37,17 +42,17 @@ class HintResultDialog extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             RichText(
-              text: const TextSpan(
+              text: TextSpan(
                 children: [
                   TextSpan(
                     text: '힌트',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w900,
-                      color: Color(0xFF1976D2),
+                      color: style.pointColor,
                     ),
                   ),
-                  TextSpan(
+                  const TextSpan(
                     text: '를 확인했어요!',
                     style: TextStyle(
                       fontSize: 20,
@@ -63,6 +68,12 @@ class HintResultDialog extends StatelessWidget {
               input: word,
               similarity: similarity,
               rank: ranking,
+
+              backgroundColor: style.cardBackgroundColor,
+              borderColor: style.cardBorderColor,
+              dividerColor: style.cardDividerColor,
+              titleColor: style.cardTitleColor,
+              pointTextColor: style.cardPointTextColor,
             ),
 
             const SizedBox(height: 22),
@@ -71,7 +82,7 @@ class HintResultDialog extends StatelessWidget {
               text: '확인',
               width: 180,
               height: 50,
-              type: LexiButtonType.blue,
+              type: style.buttonType,
               onTap: onConfirm,
             ),
           ],

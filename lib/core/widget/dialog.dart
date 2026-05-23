@@ -11,10 +11,13 @@ class LexiDialog extends StatelessWidget {
   final Color borderColor;
   final Color backgroundColor;
 
+  final String? backgroundImagePath;
   const LexiDialog({
     super.key,
     required this.child,
     required this.titleImagePath,
+
+    this.backgroundImagePath,
 
     this.titleHeight = 70,
 
@@ -61,6 +64,12 @@ class LexiDialog extends StatelessWidget {
             decoration: BoxDecoration(
               color: backgroundColor,
 
+              image: backgroundImagePath != null
+                  ? DecorationImage(
+                image: AssetImage(backgroundImagePath!),
+                fit: BoxFit.cover,
+              )
+                  : null,
               borderRadius: BorderRadius.circular(32),
 
               border: Border.all(
