@@ -691,7 +691,7 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
             SizedBox(width: height * 0.22),
             Expanded(
               child: Text(
-                '매일 정각 정답 단어가 변경돼요!',
+                '매일 00:00에 정답 단어가 변경돼요!',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(

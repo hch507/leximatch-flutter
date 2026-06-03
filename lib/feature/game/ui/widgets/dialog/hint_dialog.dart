@@ -38,14 +38,73 @@ class HintDialog extends StatelessWidget {
 
           const SizedBox(height: 10),
 
-          const Text(
-            '유사도 순위 10 ~ 200위 사이의\n단어가 제공됩니다.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF6D8795),
+          const Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: '일정 확률에 따라\n',
+                ),
+
+                TextSpan(
+                  text: 'SS',
+                  style: TextStyle(
+                    color: Color(0xFFFFD84A),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+
+                TextSpan(text: ' · '),
+
+                TextSpan(
+                  text: 'S',
+                  style: TextStyle(
+                    color: Color(0xFFB875FF),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+
+                TextSpan(text: ' · '),
+
+                TextSpan(
+                  text: 'A',
+                  style: TextStyle(
+                    color: Color(0xFF58B8FF),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+
+                TextSpan(text: ' · '),
+
+                TextSpan(
+                  text: 'B',
+                  style: TextStyle(
+                    color: Color(0xFFD7A36D),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+
+                TextSpan(text: ' · '),
+
+                TextSpan(
+                  text: 'C',
+                  style: TextStyle(
+                    color: Color(0xFFB9D98D),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+
+                TextSpan(
+                  text: ' 등급의\n힌트가 제공됩니다.',
+                ),
+              ],
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.5,
+                color: Color(0xFF6D8795),
+                fontWeight: FontWeight.w700,
+              ),
             ),
+            textAlign: TextAlign.center,
           ),
 
           const SizedBox(height: 28),
