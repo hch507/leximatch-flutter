@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:uuid/uuid.dart';
 
@@ -7,6 +8,7 @@ class DeviceRepositoryImpl
     implements DeviceRepository {
 
   static const _deviceIdKey = 'device_id';
+  static const _lastFcmTokenKey = 'last_fcm_token';
 
   final FlutterSecureStorage _storage;
 
@@ -16,6 +18,7 @@ class DeviceRepositoryImpl
 
   @override
   Future<String> getOrCreateDeviceId() async {
+
     final savedDeviceId =
     await _storage.read(
       key: _deviceIdKey,
@@ -34,5 +37,25 @@ class DeviceRepositoryImpl
     );
 
     return deviceId;
+  }
+
+  @override
+  Future<String?> getCurrentFcmToken() {
+    return FirebaseMessaging.instance.getToken();
+  }
+
+  @override
+  Future<String?> getLastFcmToken() {
+    return _storage.read(
+      key: _lastFcmTokenKey,
+    );
+  }
+
+  @override
+  Future<void> saveLastFcmToken(String token) async{
+    await _storage.write(
+      key: _lastFcmTokenKey,
+      value: token,
+    );
   }
 }
