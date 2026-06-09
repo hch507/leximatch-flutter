@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:leximatch/feature/splash/ui/providers/version_state_provider.dart';
+import 'package:leximatch/feature/splash/ui/providers/splash_state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/router/route_path.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,7 +28,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Future<void> _initialize() async {
     try {
       final versionState =
-      await ref.read(versionNotifierProvider.future);
+      await ref.read(splahsNotifierProvider.future);
 
       final packageInfo = await PackageInfo.fromPlatform();
 

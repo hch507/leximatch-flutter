@@ -1,9 +1,9 @@
 import '../../../domain/model/version_dto.dart';
 
-class VersionUiState {
+class SplashUiState {
   final VersionDto? version;
 
-  const VersionUiState({
+  const SplashUiState({
     this.version,
   });
 
@@ -15,10 +15,10 @@ class VersionUiState {
         );
   }
 
-  VersionUiState copyWith({
+  SplashUiState copyWith({
     VersionDto? version,
   }) {
-    return VersionUiState(
+    return SplashUiState(
       version: version ?? this.version,
     );
   }
