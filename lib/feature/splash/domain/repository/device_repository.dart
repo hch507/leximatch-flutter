@@ -9,4 +9,6 @@ abstract class DeviceRepository {
   Future<String?> getLastFcmToken();
 
   Future<void> saveLastFcmToken(String token);
+
+  Future<void> registerDevice(String deviceId, String fcmToken);
 }

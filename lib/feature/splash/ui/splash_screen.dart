@@ -3,11 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:leximatch/feature/splash/ui/providers/splash_state_provider.dart';
+import 'package:leximatch/feature/splash/ui/providers/device_state_provider.dart';
+import 'package:leximatch/feature/splash/ui/providers/version_state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/router/route_path.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+
+import '../../../core/widget/toast.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -26,39 +29,82 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _initialize() async {
+    final canEnter = await _checkVersion();
+
+    if (!canEnter) {
+      return;
+    }
+
+    final deviceRegistered = await _registerDevice();
+
+    if (!deviceRegistered) {
+      return;
+    }
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (!mounted) return;
+
+    context.go(RoutePath.home);
+
+  }
+  Future<bool> _checkVersion() async {
     try {
       final versionState =
-      await ref.read(splahsNotifierProvider.future);
+      await ref.read(versionNotifierProvider.future);
 
       final packageInfo = await PackageInfo.fromPlatform();
 
       final currentVersion = packageInfo.version;
       final minimumVersion = versionState.version?.minVersion;
 
+      if (minimumVersion == null) {
+        showToast(
+            "서버 오류가 발생 하였습니다 "
+        );
+        return false;
+      }
+
       final needForceUpdate = _isLowerVersion(
         currentVersion: currentVersion,
-        minimumVersion: minimumVersion!,
+        minimumVersion: minimumVersion,
       );
 
-      if (!mounted) return;
+      if (!mounted) return false;
 
       if (needForceUpdate) {
         _showForceUpdateDialog();
-        return;
+        return false;
       }
 
-      await Future.delayed(const Duration(seconds: 1));
-
-      if (!mounted) return;
-
-      context.go(RoutePath.home);
+      return true;
     } catch (e) {
       debugPrint('버전 체크 실패 : $e');
-      if (!mounted) return;
 
+      if (!mounted) return false;
+
+      showToast(
+        "버전 체크 실패 "
+      );
+
+      return false;
     }
   }
 
+  Future<bool> _registerDevice() async {
+    try {
+      await ref
+          .read(deviceNotifierProvider.notifier).register();
+
+      return true;
+    } catch (e) {
+      debugPrint('기기 등록 실패 : $e');
+
+      if (!mounted) return false;
+
+      return false;
+    }
+  }
   bool _isLowerVersion({
     required String currentVersion,
     required String minimumVersion,

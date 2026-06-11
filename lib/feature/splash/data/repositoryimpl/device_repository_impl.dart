@@ -2,11 +2,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/network/common/api_client.dart';
 import '../../domain/repository/device_repository.dart';
 
-class DeviceRepositoryImpl
-    implements DeviceRepository {
-
+class DeviceRepositoryImpl implements DeviceRepository {
+  final ApiClient apiClient;
   static const _deviceIdKey = 'device_id';
   static const _lastFcmTokenKey = 'last_fcm_token';
 
@@ -14,6 +14,7 @@ class DeviceRepositoryImpl
 
   DeviceRepositoryImpl({
     required FlutterSecureStorage storage,
+    required this.apiClient
   }) : _storage = storage;
 
   @override
@@ -44,6 +45,7 @@ class DeviceRepositoryImpl
     return FirebaseMessaging.instance.getToken();
   }
 
+  //Todo : 아직 사용안함
   @override
   Future<String?> getLastFcmToken() {
     return _storage.read(
@@ -56,6 +58,23 @@ class DeviceRepositoryImpl
     await _storage.write(
       key: _lastFcmTokenKey,
       value: token,
+    );
+  }
+
+
+  @override
+  Future<void> registerDevice(
+      String deviceId,
+      String? fcmToken,
+      ) async {
+    await apiClient.request<void>(
+      '/api/devices',
+      method: 'POST',
+      data: {
+        'device_id': deviceId,
+        'fcm_token': fcmToken,
+      },
+      fromJson: (_) {},
     );
   }
 }
