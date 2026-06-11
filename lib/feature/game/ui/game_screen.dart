@@ -123,6 +123,7 @@ class _InputSectionState extends ConsumerState<InputSection> {
   bool _isInputError = false;
   double? height;
   double? width;
+
   @override
   void initState() {
     super.initState();
@@ -142,7 +143,6 @@ class _InputSectionState extends ConsumerState<InputSection> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-
         width = constraints.maxWidth;
         height = constraints.maxHeight;
 
@@ -228,55 +228,43 @@ class _InputSectionState extends ConsumerState<InputSection> {
     );
   }
 }
+
 class ResultSection extends ConsumerStatefulWidget {
   const ResultSection({super.key});
 
   @override
-  ConsumerState<ResultSection> createState() =>
-      _ResultSectionState();
+  ConsumerState<ResultSection> createState() => _ResultSectionState();
 }
 
-class _ResultSectionState
-    extends ConsumerState<ResultSection> {
-
+class _ResultSectionState extends ConsumerState<ResultSection> {
   double? _baseHeight;
 
   @override
   Widget build(BuildContext context) {
-
     _listenCorrectAnswerDialog(context, ref);
 
-    final asyncState =
-    ref.watch(gameStateProvider);
+    final asyncState = ref.watch(gameStateProvider);
 
-    final gameState =
-        asyncState.value ?? const GameUiState();
+    final gameState = asyncState.value ?? const GameUiState();
 
-    final myResult =
-        gameState.displayMyResult;
+    final myResult = gameState.displayMyResult;
 
     final top5 = gameState.top5;
 
-    final isWordNotInDictionary =
-        gameState.isWordNotFound;
+    final isWordNotInDictionary = gameState.isWordNotFound;
 
     return LayoutBuilder(
       builder: (context, constraints) {
-
         // 최초 높이 저장
-        _baseHeight ??=
-            constraints.maxHeight;
+        _baseHeight ??= constraints.maxHeight;
 
         final height = _baseHeight!;
 
-        final myCardHeight =
-            height * 0.13;
+        final myCardHeight = height * 0.13;
 
-        final icTitleHeight =
-            myCardHeight * 0.3;
+        final icTitleHeight = myCardHeight * 0.3;
 
-        final hintCardHeight =
-            height * 0.08;
+        final hintCardHeight = height * 0.08;
 
         return Padding(
           padding: EdgeInsets.only(
@@ -286,21 +274,17 @@ class _ResultSectionState
             bottom: MediaQuery.viewPaddingOf(context).bottom + 12,
           ),
           child: LexiMatchBox(
-            padding:
-            const EdgeInsets.fromLTRB(
+            padding: const EdgeInsets.fromLTRB(
               12,
               10,
               12,
               10,
             ),
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Align(
-                  alignment:
-                  const Alignment(-0.85, 0),
+                  alignment: const Alignment(-0.85, 0),
                   child: Image.asset(
                     'assets/images/ic_my_research_title.png',
                     height: icTitleHeight,
@@ -308,9 +292,7 @@ class _ResultSectionState
                 ),
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 360),
-
                   transitionBuilder: (child, animation) {
-
                     final scaleAnimation = Tween<double>(
                       begin: 0.92,
                       end: 1.0,
@@ -333,32 +315,22 @@ class _ResultSectionState
 
                     return AnimatedBuilder(
                       animation: animation,
-
                       builder: (context, childWidget) {
-
                         return FadeTransition(
                           opacity: animation,
-
                           child: Transform.scale(
                             scale: scaleAnimation.value,
-
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(24),
-
                                 boxShadow: [
-
                                   // 메인 블루 glow
                                   BoxShadow(
-                                    color: const Color(0xFF7DD8FF)
-                                        .withOpacity(
+                                    color: const Color(0xFF7DD8FF).withOpacity(
                                       0.32 * animation.value,
                                     ),
-
                                     blurRadius: glowAnimation.value,
-
-                                    spreadRadius:
-                                    glowAnimation.value * 0.08,
+                                    spreadRadius: glowAnimation.value * 0.08,
                                   ),
 
                                   // 하얀빛 보조 glow
@@ -366,102 +338,74 @@ class _ResultSectionState
                                     color: Colors.white.withOpacity(
                                       0.12 * animation.value,
                                     ),
-
-                                    blurRadius:
-                                    glowAnimation.value * 0.5,
+                                    blurRadius: glowAnimation.value * 0.5,
                                   ),
                                 ],
                               ),
-
                               child: childWidget,
                             ),
                           ),
                         );
                       },
-
                       child: child,
                     );
                   },
-
                   child: SizedBox(
                     key: ValueKey(
                       isWordNotInDictionary
                           ? 'not-found'
                           : '${myResult.userInput}_${myResult.ranking}_${myResult.dist}',
                     ),
-
                     height: myCardHeight,
-
                     child: MySearchResultCard(
-                      input:
-                      isWordNotInDictionary
-                          ? "-"
-                          : myResult.userInput,
-
-                      similarity:
-                      isWordNotInDictionary
+                      input: isWordNotInDictionary ? "-" : myResult.userInput,
+                      similarity: isWordNotInDictionary
                           ? "-"
                           : myResult.dist.toString(),
-
-                      rank:
-                      isWordNotInDictionary
+                      rank: isWordNotInDictionary
                           ? "-"
                           : myResult.ranking.toString(),
                     ),
                   ),
                 ),
-
                 SizedBox(
                   height: 16,
                   child: Visibility(
-                    visible:
-                    isWordNotInDictionary,
+                    visible: isWordNotInDictionary,
                     maintainSize: true,
-                    maintainAnimation:
-                    true,
+                    maintainAnimation: true,
                     maintainState: true,
                     child: const Padding(
-                      padding:
-                      EdgeInsets.only(
+                      padding: EdgeInsets.only(
                         left: 18,
                       ),
                       child: Align(
-                        alignment:
-                        Alignment
-                            .centerLeft,
+                        alignment: Alignment.centerLeft,
                         child: Text(
                           '단어를 찾지 못했습니다',
                           style: TextStyle(
-                            color:
-                            Colors.red,
+                            color: Colors.red,
                             fontSize: 10,
-                            fontWeight:
-                            FontWeight
-                                .w600,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-
                 const Divider(
                   height: 24,
                   thickness: 1.2,
-                  color:
-                  Color(0xFFE3D7BE),
+                  color: Color(0xFFE3D7BE),
                   indent: 18,
                   endIndent: 18,
                 ),
-
                 Expanded(
                   child: _buildTop5Section(
-                    isServerError:
-                    asyncState.hasError,
+                    isServerError: asyncState.hasError,
                     top5: top5,
                   ),
                 ),
-
                 ResultHintCard(
                   height: hintCardHeight,
                 ),
@@ -624,10 +568,10 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
 
         _showHintResultDialog(hint);
       },
-      onLoading: (){
+      onLoading: () {
         showToast("광고를 준비중입니다.\n잠시만 기다려주세요. ");
       },
-      onLoadFailed: (){
+      onLoadFailed: () {
         _showHintResultDialog(hint);
       },
       onNotReady: () {
@@ -812,6 +756,7 @@ void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
         barrierDismissible: false,
         builder: (_) => CorrectAnswerDialog(
           elapsedTime: currentResult.elapsedTime,
+          rank: "1",
           onConfirm: () {
             Navigator.pop(context);
             context.go(RoutePath.home);
