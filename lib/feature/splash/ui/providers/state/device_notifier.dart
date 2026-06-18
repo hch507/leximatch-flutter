@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../domain/providers/device_repository_provider.dart';
 import '../../../domain/repository/device_repository.dart';
@@ -44,16 +46,40 @@ class DeviceNotifier extends AutoDisposeAsyncNotifier<void> {
   }
 
   Future<void> _requestNotificationPermissionIfNeeded() async {
-    final settings =
-    await FirebaseMessaging.instance.getNotificationSettings();
+    if (Platform.isIOS) {
+      final settings =
+      await FirebaseMessaging.instance.getNotificationSettings();
 
-    if (settings.authorizationStatus ==
-        AuthorizationStatus.notDetermined) {
-      await FirebaseMessaging.instance.requestPermission();
+      if (settings.authorizationStatus ==
+          AuthorizationStatus.notDetermined) {
+        await FirebaseMessaging.instance.requestPermission(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+      }
 
-      await Future.delayed(
-        const Duration(seconds: 1),
-      );
+      return;
+    }
+
+    if (Platform.isAndroid) {
+      final status = await Permission.notification.status;
+
+      if (status.isGranted) {
+        return;
+      }
+
+      if (status.isDenied) {
+        await Permission.notification.request();
+        return;
+      }
+
+      // "다시 묻지 않음" 상태
+      if (status.isPermanentlyDenied) {
+        // 설정 이동은 바로 하지 말고
+        // 다이얼로그 보여준 뒤 사용자가 눌렀을 때 이동
+        return;
+      }
     }
   }
 }
