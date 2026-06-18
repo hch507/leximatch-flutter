@@ -102,7 +102,7 @@ class CorrectResultCard extends StatelessWidget {
           _InfoRow(
             iconPath: 'assets/images/ic_trophy.png',
             title: '최초 클리어 랭크',
-            value: '${rank}등',
+            value: '${rank}',
             titleColor: const Color(0xFFC97A00),
             valueColor: const Color(0xFFFF8A00),
             iconBackgroundColor: const Color(0xFFFFF1C9),
