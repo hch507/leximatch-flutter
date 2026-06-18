@@ -99,7 +99,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       return true;
     } catch (e) {
       debugPrint('기기 등록 실패 : $e');
-
+      showToast(
+          " '서비스 연결에 실패했습니다.\n잠시 후 다시 시도해주세요.',"
+      );
       if (!mounted) return false;
 
       return false;
