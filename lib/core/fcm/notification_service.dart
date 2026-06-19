@@ -13,8 +13,15 @@ class NotificationService {
     const androidSettings =
     AndroidInitializationSettings('@mipmap/ic_launcher');
 
+    const iosSettings = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+
     const settings = InitializationSettings(
       android: androidSettings,
+      iOS: iosSettings,
     );
 
     await _plugin.initialize( settings: settings);
@@ -47,8 +54,11 @@ class NotificationService {
       priority: Priority.high,
     );
 
+    const iosDetails = DarwinNotificationDetails();
+
     const details = NotificationDetails(
       android: androidDetails,
+      iOS: iosDetails,
     );
 
     await _plugin.show(
