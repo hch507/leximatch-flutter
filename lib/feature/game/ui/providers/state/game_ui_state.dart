@@ -20,6 +20,7 @@ class GameUiState {
           dist: '-',
           ranking: '-',
           elapsedTime: "-",
+          clearRank: "-"
         );
   }
 

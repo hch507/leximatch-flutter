@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "359655384073",
+    "project_id": "leximatch-77825",
+    "storage_bucket": "leximatch-77825.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359655384073:android:416d5aca28c791f06d84d8",
+        "android_client_info": {
+          "package_name": "com.lotto.leximatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPj0xDuD1PYH-VcnYpKKSAeqTCIYxZ8vw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
