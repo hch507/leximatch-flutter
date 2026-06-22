@@ -203,6 +203,7 @@ class _InputSectionState extends ConsumerState<InputSection> {
                               gameStateProvider.notifier,
                             )
                             .fetchSimilarity(text);
+                        _textEditingController.clear();
                       },
                     ),
                     SizedBox(width: width! * 0.03),
@@ -750,8 +751,7 @@ void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
 
     final wasCorrect = previousResult?.dist.toString() == '100.0';
     final isCorrect = currentResult.dist.toString() == '100.0';
-    final displayRank =
-    currentResult.clearRank == 'RANK_SAVE_FAILED'
+    final displayRank = currentResult.clearRank == 'RANK_SAVE_FAILED'
         ? '확인 불가'
         : '${currentResult.clearRank}등';
     if (!wasCorrect && isCorrect) {
