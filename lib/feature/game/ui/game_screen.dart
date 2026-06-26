@@ -119,7 +119,6 @@ class InputSection extends ConsumerStatefulWidget {
 
 class _InputSectionState extends ConsumerState<InputSection> {
   final TextEditingController _textEditingController = TextEditingController();
-
   bool _isInputError = false;
   double? height;
   double? width;
@@ -128,14 +127,15 @@ class _InputSectionState extends ConsumerState<InputSection> {
   void initState() {
     super.initState();
 
-    _textEditingController.addListener(() {
-      setState(() {});
-    });
+    // _textEditingController.addListener(() {
+    //   setState(() {});
+    // });
   }
 
   @override
   void dispose() {
     _textEditingController.dispose();
+
     super.dispose();
   }
 
@@ -163,7 +163,7 @@ class _InputSectionState extends ConsumerState<InputSection> {
               0,
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -173,54 +173,75 @@ class _InputSectionState extends ConsumerState<InputSection> {
                     _textEditingController.clear();
                     setState(() {});
                   },
+                  onSearch: (){
+                    final text = _textEditingController.text.trim();
+
+                    if (text.isEmpty) {
+                      setState(() {
+                        _isInputError = true;
+                      });
+                      return;
+                    }
+
+                    setState(() {
+                      _isInputError = false;
+                    });
+
+                    ref
+                        .read(
+                      gameStateProvider.notifier,
+                    )
+                        .fetchSimilarity(text);
+                    _textEditingController.clear();
+                  },
                   isError: _isInputError,
                   height: textFieldHeight,
                 ),
                 SizedBox(height: height! * 0.03),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    LexiGameButton(
-                      text: "유사도 체크",
-                      width: buttonWidth,
-                      height: buttonHeight,
-                      onTap: () {
-                        final text = _textEditingController.text.trim();
-
-                        if (text.isEmpty) {
-                          setState(() {
-                            _isInputError = true;
-                          });
-                          return;
-                        }
-
-                        setState(() {
-                          _isInputError = false;
-                        });
-
-                        ref
-                            .read(
-                              gameStateProvider.notifier,
-                            )
-                            .fetchSimilarity(text);
-                        _textEditingController.clear();
-                      },
-                    ),
-                    SizedBox(width: width! * 0.03),
-                    Expanded(
-                      child: SizedBox(
-                        height: dogHeight,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Image.asset(
-                            "assets/images/ic_lodo_search.png",
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   children: [
+                //     LexiGameButton(
+                //       text: "유사도 체크",
+                //       width: buttonWidth,
+                //       height: buttonHeight,
+                //       onTap: () {
+                //         final text = _textEditingController.text.trim();
+                //
+                //         if (text.isEmpty) {
+                //           setState(() {
+                //             _isInputError = true;
+                //           });
+                //           return;
+                //         }
+                //
+                //         setState(() {
+                //           _isInputError = false;
+                //         });
+                //
+                //         ref
+                //             .read(
+                //               gameStateProvider.notifier,
+                //             )
+                //             .fetchSimilarity(text);
+                //         _textEditingController.clear();
+                //       },
+                //     ),
+                //     SizedBox(width: width! * 0.03),
+                //     Expanded(
+                //       child: SizedBox(
+                //         height: dogHeight,
+                //         child: Align(
+                //           alignment: Alignment.bottomCenter,
+                //           child: Image.asset(
+                //             "assets/images/ic_lodo_search.png",
+                //             fit: BoxFit.contain,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),
@@ -423,8 +444,10 @@ class LexiTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final VoidCallback? onClear;
+  final VoidCallback? onSearch;
   final bool isError;
   final double height;
+
 
   const LexiTextField({
     super.key,
@@ -432,6 +455,7 @@ class LexiTextField extends StatelessWidget {
     required this.height,
     this.hintText = "단어 입력",
     this.onClear,
+    this.onSearch,
     this.isError = false,
   });
 
@@ -445,11 +469,20 @@ class LexiTextField extends StatelessWidget {
       height: height,
       child: TextField(
         controller: controller,
+        textInputAction: TextInputAction.search,
         style: TextStyle(
           fontSize: fontSize,
           fontWeight: FontWeight.w700,
           color: AppColors.textPrimary,
         ),
+
+        onTapOutside: (_) {
+          FocusScope.of(context).unfocus();
+        },
+        onEditingComplete: () {
+          onSearch?.call();
+
+        },
         decoration: InputDecoration(
           hintText: hintText,
           prefixIcon: Padding(
