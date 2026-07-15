@@ -5,10 +5,15 @@ class SimilarityProgressCard extends StatefulWidget {
   final String word;
   final String rank;
 
+
+  /// 기본 카드 높이
+  final double height;
+
   const SimilarityProgressCard({
     super.key,
     required this.word,
     required this.rank,
+    this.height = 100,
   });
 
   @override
@@ -58,11 +63,21 @@ class _SimilarityProgressCardState extends State<SimilarityProgressCard> {
 
   @override
   Widget build(BuildContext context) {
-    const double barHeight = 12;
-    const double pawSize = 25;
+    final height = widget.height;
+
+    final fontSize = height * 0.10;
+    final guideFontSize = height * 0.08;
+
+    final barHeight = height * 0.095;
+    final pawSize = height * 0.20;
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(18, 14, 18, 16),
+        padding: EdgeInsets.fromLTRB(
+          height * 0.145,
+          height * 0.11,
+          height * 0.145,
+          height * 0.13,
+        ),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFEFB),
         borderRadius: BorderRadius.circular(18),
@@ -83,14 +98,14 @@ class _SimilarityProgressCardState extends State<SimilarityProgressCard> {
         children: [
           Row(
             children: [
-              const Text("🏆", style: TextStyle(fontSize: 22)),
+              Text("🏆", style: TextStyle(fontSize: height * 0.175,)),
               const SizedBox(width: 8),
-              const Text(
+              Text(
                 "최고 기록",
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: fontSize,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF222222),
+                  color: const Color(0xFF222222),
                 ),
               ),
               const SizedBox(width: 12),
@@ -105,10 +120,10 @@ class _SimilarityProgressCardState extends State<SimilarityProgressCard> {
                 ),
                 child: Text(
                   widget.word,
-                  style: const TextStyle(
-                    fontSize: 13,
+                  style: TextStyle(
+                    fontSize: fontSize,
                     fontWeight: FontWeight.w800,
-                    color: Color(0xFFC96C1E),
+                    color: const Color(0xFFC96C1E),
                   ),
                 ),
               ),
@@ -131,10 +146,10 @@ class _SimilarityProgressCardState extends State<SimilarityProgressCard> {
                     ),
                     child: Text(
                       widget.rank,
-                      style: const TextStyle(
-                        fontSize: 10,
+                      style: TextStyle(
+                        fontSize: fontSize,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFFFF7A00),
+                        color: const Color(0xFFFF7A00),
                       ),
                     ),
                   ),
@@ -225,10 +240,10 @@ class _SimilarityProgressCardState extends State<SimilarityProgressCard> {
                                 ),
                               ],
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.pets,
                               color: Colors.white,
-                              size: 15,
+                              size: pawSize*0.6,
                             ),
                           ),
                         ),
@@ -242,47 +257,47 @@ class _SimilarityProgressCardState extends State<SimilarityProgressCard> {
 
           const SizedBox(height: 10),
 
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "1000+",
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: guideFontSize,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF5C4635),
+                  color: const Color(0xFF5C4635),
                 ),
               ),
               Text(
                 "TOP 750",
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: guideFontSize,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF5C4635),
+                  color: const Color(0xFF5C4635),
                 ),
               ),
               Text(
                 "TOP 500",
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: guideFontSize,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF5C4635),
+                  color: const Color(0xFF5C4635),
                 ),
               ),
               Text(
                 "TOP 250",
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: guideFontSize,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF5C4635),
+                  color: const Color(0xFF5C4635),
                 ),
               ),
               Text(
                 "정답!",
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: guideFontSize,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF5C4635),
+                  color: const Color(0xFF5C4635),
                 ),
               ),
             ],

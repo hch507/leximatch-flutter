@@ -195,7 +195,9 @@ class _InputSectionState extends ConsumerState<InputSection> {
                       gameStateProvider.notifier,
                     )
                     .fetchSimilarity(text);
-                _textEditingController.clear();
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  _textEditingController.value = TextEditingValue.empty;
+                });
               },
               isError: _isInputError,
               height: textFieldHeight,
@@ -243,6 +245,8 @@ class _ResultSectionState extends ConsumerState<ResultSection> {
         final height = _baseHeight!;
 
         final myCardHeight = height * 0.13;
+
+        final resultProgressHeight = height * 0.20;
 
         final icTitleHeight = myCardHeight * 0.3;
 
@@ -365,6 +369,7 @@ class _ResultSectionState extends ConsumerState<ResultSection> {
             SimilarityProgressCard(
               word: progressResult?.userInput ?? "-",
               rank: progressResult?.ranking ?? "-",
+              height: resultProgressHeight,
             ),
 
             const SizedBox(height: 5),
