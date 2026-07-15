@@ -75,7 +75,7 @@ class LexiTextField extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(
-              color: isError ? Colors.red : AppColors.primary,
+              color: isError ? Colors.red : AppColors.textPrimary,
               width: 1.8,
             ),
           ),
