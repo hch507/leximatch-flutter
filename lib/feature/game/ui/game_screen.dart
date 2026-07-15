@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:leximatch/core/widget/box.dart';
@@ -223,6 +224,7 @@ class _ResultSectionState extends ConsumerState<ResultSection> {
   @override
   Widget build(BuildContext context) {
     _listenCorrectAnswerDialog(context, ref);
+    _listenRankingHaptic(ref);
 
     final asyncState = ref.watch(gameStateProvider);
 
@@ -371,7 +373,6 @@ class _ResultSectionState extends ConsumerState<ResultSection> {
               rank: progressResult?.ranking ?? "-",
               height: resultProgressHeight,
             ),
-
             const SizedBox(height: 5),
             Expanded(
               child: _buildTop5Section(
@@ -388,7 +389,6 @@ class _ResultSectionState extends ConsumerState<ResultSection> {
     );
   }
 }
-
 
 class ResultHintCard extends ConsumerStatefulWidget {
   final double height;
@@ -666,4 +666,34 @@ void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
       );
     }
   });
+}
+
+void _listenRankingHaptic(WidgetRef ref) {
+  ref.listen(
+    gameStateProvider,
+    (previous, next) {
+      final previousResult = previous?.value?.displayMyResult;
+      final nextResult = next.value?.displayMyResult;
+
+      if (nextResult == null) return;
+
+      final previousRanking = int.tryParse(
+        previousResult?.ranking.toString() ?? '',
+      );
+
+      final nextRanking = int.tryParse(
+        nextResult.ranking.toString(),
+      );
+
+      if (nextRanking == null) return;
+
+      // 동일한 결과로 리빌드된 경우 진동 방지
+      if (previousRanking == nextRanking) return;
+      if (nextRanking <= 10) {
+        HapticFeedback.vibrate();
+      } else if (nextRanking <= 300) {
+        HapticFeedback.heavyImpact();
+      }
+    },
+  );
 }
