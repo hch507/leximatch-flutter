@@ -689,9 +689,8 @@ void _listenRankingHaptic(WidgetRef ref) {
 
       // 동일한 결과로 리빌드된 경우 진동 방지
       if (previousRanking == nextRanking) return;
-      if (nextRanking <= 10) {
-        HapticFeedback.vibrate();
-      } else if (nextRanking <= 300) {
+
+      if (nextRanking <= 300) {
         HapticFeedback.heavyImpact();
       }
     },
