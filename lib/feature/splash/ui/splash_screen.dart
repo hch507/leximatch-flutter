@@ -171,7 +171,7 @@ class _SplashBody extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Image.asset(
-          'assets/images/leximatch_title_logo.png',
+          'assets/images/ic_leximatch_new_logo.png',
           fit: BoxFit.contain,
         ),
       ),

@@ -2,6 +2,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../style/hint_result_dialog_style.dart';
+
 class MySearchResultCard extends StatelessWidget {
   final String input;
   final String similarity;
@@ -10,6 +12,7 @@ class MySearchResultCard extends StatelessWidget {
   final bool showSearchIcon;
 
   final double height;
+  final HintResultDialogStyle style;
 
   const MySearchResultCard({
     super.key,
@@ -18,7 +21,7 @@ class MySearchResultCard extends StatelessWidget {
     required this.rank,
 
     this.showSearchIcon = true,
-
+    required this.style,
     this.height = 60,
   });
 
@@ -45,14 +48,14 @@ class MySearchResultCard extends StatelessWidget {
       ),
 
       decoration: BoxDecoration(
-        color: const Color(0xFFEAF7FF),
+        color: style.cardBackgroundColor,
 
         borderRadius: BorderRadius.circular(
           borderRadius,
         ),
 
         border: Border.all(
-          color: const Color(0xFF9BD4FF),
+          color: style.cardBorderColor,
           width: 2,
         ),
 
@@ -86,13 +89,15 @@ class MySearchResultCard extends StatelessWidget {
               value: input,
               titleFontSize: titleFontSize,
               valueFontSize: valueFontSize,
+              center: true,
+              valueColor: style.cardPointTextColor,
             ),
           ),
 
           VerticalDivider(
             width: height * 0.2,
             thickness: 1.4,
-            color: const Color(0xFFB7DDF6),
+            color: style.cardDividerColor,
             indent: height * 0.25,
             endIndent: height * 0.25,
           ),
@@ -104,13 +109,14 @@ class MySearchResultCard extends StatelessWidget {
               center: true,
               titleFontSize: titleFontSize,
               valueFontSize: valueFontSize,
+              valueColor: style.cardPointTextColor,
             ),
           ),
 
           VerticalDivider(
             width: height * 0.2,
             thickness: 1.4,
-            color: const Color(0xFFB7DDF6),
+            color: style.cardDividerColor,
             indent: height * 0.25,
             endIndent: height * 0.25,
           ),
@@ -122,6 +128,7 @@ class MySearchResultCard extends StatelessWidget {
               center: true,
               titleFontSize: titleFontSize,
               valueFontSize: valueFontSize,
+              valueColor: style.cardPointTextColor,
             ),
           ),
         ],
@@ -136,13 +143,14 @@ class _ResultColumn extends StatelessWidget {
 
   final bool center;
 
+  final Color valueColor;
   final double titleFontSize;
   final double valueFontSize;
 
   const _ResultColumn({
     required this.title,
     required this.value,
-
+    required this.valueColor,
     required this.titleFontSize,
     required this.valueFontSize,
 
@@ -183,7 +191,7 @@ class _ResultColumn extends StatelessWidget {
           style: TextStyle(
             fontSize: valueFontSize,
             fontWeight: FontWeight.w900,
-            color: const Color(0xFF1677D2),
+            color: valueColor,
           ),
         ),
       ],
