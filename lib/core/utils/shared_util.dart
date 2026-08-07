@@ -34,6 +34,12 @@ class ShareUtil {
       ShareParams(
         text: buffer.toString(),
         subject: "Momantle 도움 요청",
+        sharePositionOrigin: const Rect.fromLTWH(
+          0,
+          0,
+          1,
+          1,
+        ),
       ),
     );
   }
