@@ -15,12 +15,14 @@ import 'package:leximatch/feature/game/ui/widgets/card/top5_result_card.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/correct_answer_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/hint_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/hint_result_dialog.dart';
+import 'package:leximatch/feature/game/ui/widgets/dialog/support_send_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/textfield/lexi_text_field.dart';
 
 import '../../../core/ad/reward_manager.dart';
 import '../../../core/network/exception/api_exception.dart';
 import '../../../core/router/route_path.dart';
 import '../../../core/style/colors.dart';
+import '../../../core/utils/shared_util.dart';
 import '../../../core/widget/button/lexi_game_button/lexi_game_button.dart';
 import '../../../core/widget/button/pressable_image_button.dart';
 import '../../../core/widget/toast.dart';
@@ -38,14 +40,42 @@ class GameScreen extends StatelessWidget {
   }
 }
 
-class GameAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const GameAppBar({super.key});
+class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
+  const GameAppBar({
+    super.key,
+  });
 
   @override
   Size get preferredSize => const Size.fromHeight(70);
 
+  void _showSupportSendDialog(BuildContext context,WidgetRef ref) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => SupportSendDialog(
+
+
+        onSend: () async {
+          debugPrint("onSend");
+          final gameState = ref.read(gameStateProvider).value;
+          debugPrint(gameState.toString());
+          if (gameState == null) return;
+
+          // Navigator.pop(context);
+
+          await ShareUtil.shareTop5(
+            top5: gameState.top5,
+          );
+        },
+        onCancel: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
@@ -55,7 +85,7 @@ class GameAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           Image.asset(
             'assets/images/ic_leximatch_new_logo.png',
-            height: 70,
+            height: 40,
             fit: BoxFit.contain,
           ),
 
@@ -73,6 +103,19 @@ class GameAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
+
+          Align(
+            alignment: Alignment.centerRight,
+            child: SizedBox(
+              width: 40,
+              height: 40,
+              child: PressableImageButton(
+                  imagePath: "assets/images/ic_support_send.png",
+                  onTap: () {
+                    _showSupportSendDialog(context,ref);
+                  }),
+            ),
+          )
         ],
       ),
     );
