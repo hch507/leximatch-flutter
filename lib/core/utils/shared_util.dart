@@ -2,52 +2,38 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
+import 'package:leximatch/feature/game/domain/model/game_dto.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ShareUtil {
-
-  static Future<void> shareCorrectAnswer({
-    required String playTime,
+  static Future<void> shareTop5({
+    required List<GameDto> top5,
   }) async {
+    final buffer = StringBuffer();
 
-    final byteData = await rootBundle.load(
-      'assets/images/ic_lodo_search.png',
-    );
+    buffer.writeln("🐾 Momantle 도움 요청!");
+    buffer.writeln();
+    buffer.writeln("도움을 요청했습니다!");
+    buffer.writeln();
+    buffer.writeln("현재까지 찾은 단어 Top5");
+    buffer.writeln();
 
-    final tempDir = await getTemporaryDirectory();
+    for (var i = 0; i < top5.length; i++) {
+      final item = top5[i];
 
-    final imageFile = File(
-      '${tempDir.path}/leximatch_share.png',
-    );
+      buffer.writeln(
+        "${i + 1}. ${item.userInput} | ${item.dist} | ${item.ranking}위",
+      );
+    }
 
-    await imageFile.writeAsBytes(
-      byteData.buffer.asUint8List(),
-    );
-
-    final text = '''
-🎉 LexiMatch 정답 성공!
-
-걸린 시간 : $playTime
-
-매일 새로운 단어에 도전해보세요!
-
-https://play.google.com/store/apps/details?id=com.lotto.leximatch
-''';
+    buffer.writeln();
+    buffer.writeln("💡 떠오르는 단어가 있다면 알려주세요!");
 
     await SharePlus.instance.share(
       ShareParams(
-        files: [
-          XFile(imageFile.path),
-        ],
-        text: text,
-        subject: 'LexiMatch',
-        sharePositionOrigin: const Rect.fromLTWH(
-          0,
-          0,
-          1,
-          1,
-        ),
+        text: buffer.toString(),
+        subject: "Momantle 도움 요청",
       ),
     );
   }
