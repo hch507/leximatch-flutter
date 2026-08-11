@@ -61,7 +61,12 @@ class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
           debugPrint(gameState.toString());
           if (gameState == null) return;
 
-          // Navigator.pop(context);
+          if (gameState.top5.length < 5) {
+            showToast("공유할 단어를 5개 이상 입력해주세요.");
+            return;
+          }
+
+          Navigator.pop(context);
 
           await ShareUtil.shareTop5(
             top5: gameState.top5,

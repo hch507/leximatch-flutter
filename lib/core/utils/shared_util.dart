@@ -14,8 +14,6 @@ class ShareUtil {
 
     buffer.writeln("🐾 Momantle 도움 요청!");
     buffer.writeln();
-    buffer.writeln("도움을 요청했습니다!");
-    buffer.writeln();
     buffer.writeln("현재까지 찾은 단어 Top5");
     buffer.writeln();
 
@@ -28,7 +26,7 @@ class ShareUtil {
     }
 
     buffer.writeln();
-    buffer.writeln("💡 떠오르는 단어가 있다면 알려주세요!");
+    buffer.writeln("💡 떠오르는 유사한 단어가 있다면 알려주세요!");
 
     await SharePlus.instance.share(
       ShareParams(
