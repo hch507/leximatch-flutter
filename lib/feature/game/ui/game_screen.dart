@@ -470,11 +470,16 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
     showDialog(
       context: context,
       barrierDismissible: false,
+      // builder: (_) => HintDialog(
+      //   onAdWatch: _onAdWatch,
+      //   onCancel: () {
+      //     Navigator.pop(context);
+      //   },
+      // ),
       builder: (_) => HintDialog(
-        onAdWatch: _onAdWatch,
         onCancel: () {
           Navigator.pop(context);
-        },
+        }, onBigHintWatch: () {  }, onRandomHintWatch: () {  },
       ),
     );
   }
