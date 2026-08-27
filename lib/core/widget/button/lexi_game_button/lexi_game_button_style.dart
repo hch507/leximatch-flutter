@@ -150,6 +150,21 @@ class LexiButtonStyle {
           strokeColor: AppColors.orangeButtonStroke,
         );
 
+      case LexiButtonType.fail:
+        return const LexiButtonStyle(
+          normalColors: [
+            Color(0xFF7669E8),
+            Color(0xFF5B4BD1),
+          ],
+          pressedColors: [
+            Color(0xFF6659D4),
+            Color(0xFF4D3FC0),
+          ],
+          borderColor: Color(0xFF4D3FC0),
+          pressedBorderColor: Color(0xFF3E32A5),
+          shadowColor: Color(0xFF30268A),
+          strokeColor: Color(0xFF5B4BD1),
+        );
       case LexiButtonType.gray:
         return const LexiButtonStyle(
           normalColors: [

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:leximatch/core/network/common/api_client.dart';
+import 'package:leximatch/feature/game/domain/model/initial_hint_dto.dart';
 
 import 'package:leximatch/feature/game/domain/repository/game_repository.dart';
 
@@ -19,11 +20,9 @@ class GameRepositoryImpl implements GameRepository {
 
   @override
   Future<GameDto?> fetchSimilarity(
-      String keyword,
-      ) async {
-
-    final deviceId =
-    await deviceRepository.getOrCreateDeviceId();
+    String keyword,
+  ) async {
+    final deviceId = await deviceRepository.getOrCreateDeviceId();
     print('guess deviceId = $deviceId');
     return apiClient.request<GameDto>(
       '/api/games/guess',
@@ -39,6 +38,7 @@ class GameRepositoryImpl implements GameRepository {
       },
     );
   }
+
   @override
   Future<HintDto?> fetchHint() {
     return apiClient.request<HintDto>(
@@ -48,5 +48,10 @@ class GameRepositoryImpl implements GameRepository {
         return HintDto.fromJson(json as Map<String, dynamic>);
       },
     );
+  }
+
+  @override
+  Future<InitialHintDto> fetchInitialHint() async {
+    return InitialHintDto(initial: "ㅗ", isSuccess: true);
   }
 }

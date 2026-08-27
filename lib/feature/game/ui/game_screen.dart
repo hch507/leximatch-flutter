@@ -7,14 +7,17 @@ import 'package:leximatch/core/widget/button/lexi_game_button/lexi_game_button_t
 import 'package:leximatch/feature/game/domain/model/hint_dto.dart';
 import 'package:leximatch/feature/game/ui/providers/game_state_provider.dart';
 import 'package:leximatch/feature/game/ui/providers/hint_state_provider.dart';
+import 'package:leximatch/feature/game/ui/providers/initial_hint_state_provider.dart';
 import 'package:leximatch/feature/game/ui/providers/state/game_ui_state.dart';
 import 'package:leximatch/feature/game/ui/style/hint_result_dialog_style.dart';
 import 'package:leximatch/feature/game/ui/widgets/card/research_card.dart';
 import 'package:leximatch/feature/game/ui/widgets/card/similarity_progress_card.dart';
 import 'package:leximatch/feature/game/ui/widgets/card/top5_result_card.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/correct_answer_dialog.dart';
+import 'package:leximatch/feature/game/ui/widgets/dialog/f_initial_hint_result_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/hint_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/hint_result_dialog.dart';
+import 'package:leximatch/feature/game/ui/widgets/dialog/s_initial_hint_result_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/support_send_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/textfield/lexi_text_field.dart';
 
@@ -470,16 +473,10 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      // builder: (_) => HintDialog(
-      //   onAdWatch: _onAdWatch,
-      //   onCancel: () {
-      //     Navigator.pop(context);
-      //   },
-      // ),
       builder: (_) => HintDialog(
         onCancel: () {
           Navigator.pop(context);
-        }, onBigHintWatch: () {  }, onRandomHintWatch: () {  },
+        }, onBigHintWatch: _onInitialHintAdWatch, onRandomHintWatch: _onAdWatch,
       ),
     );
   }
@@ -487,7 +484,39 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
   void _onHintTap() {
     _showHintDialog(context);
   }
+  Future<void> _onInitialHintAdWatch() async {
+    debugPrint("_onInitialHintAdWatch 시작");
+    try {
+      final hint = await ref.read(initialHintProvider.notifier).fetchInitialHint();
 
+      if (hint == null) {
+        debugPrint("힌트를 불러오지 못했어요");
+        return;
+      }
+      if (!mounted) return;
+
+      Navigator.pop(context);
+      if (hint.isSuccess) {
+        _showSuccessInitialHintResultDialog(hint.initial);
+      } else {
+        _showFailInitialHintResultDialog();
+      }
+      // _showRewardAd(
+      //   onComplete: () {
+      //     if (hint.isSuccess) {
+      //       _showSuccessInitialHintResultDialog(hint.initial);
+      //     } else {
+      //       _showFailInitialHintResultDialog();
+      //     }
+      //   },
+      // );
+
+    } catch (e, st) {
+      debugPrint("힌트 조회 실패: $e");
+      debugPrintStack(stackTrace: st);
+      showToast("서버 오류가 발생했습니다.");
+    }
+  }
   Future<void> _onAdWatch() async {
     debugPrint("_onAdWatch 시작");
     try {
@@ -501,7 +530,10 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
 
       Navigator.pop(context);
 
-      _showRewardAd(hint);
+      _showRewardAd(
+        onComplete: () => _showHintResultDialog(hint),
+      );
+
     } catch (e, st) {
       debugPrint("힌트 조회 실패: $e");
       debugPrintStack(stackTrace: st);
@@ -509,21 +541,26 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
       showToast("서버 오류가 발생했습니다.");
     }
   }
-
-  void _showRewardAd(HintDto hint) {
+  void _showRewardAd({
+    required VoidCallback onComplete,
+  }) {
     rewardAdManager.show(
       onRewarded: () {
         debugPrint("광고 시청 완료");
 
         if (!mounted) return;
 
-        _showHintResultDialog(hint);
+        onComplete();
       },
       onLoading: () {
-        showToast("광고를 준비중입니다.\n잠시만 기다려주세요. ");
+        showToast(
+          "광고를 준비중입니다.\n잠시만 기다려주세요.",
+        );
       },
       onLoadFailed: () {
-        _showHintResultDialog(hint);
+        if (!mounted) return;
+
+        onComplete();
       },
       onNotReady: () {
         showToast(
@@ -551,7 +588,28 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
       ),
     );
   }
-
+  void _showFailInitialHintResultDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => FInitialHintResultDialog(
+        onConfirm: () {
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+  void _showSuccessInitialHintResultDialog(String? initial) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => SInitialHintResultDialog(
+        onConfirm: () {
+          Navigator.pop(context);
+        }, initialWord: initial!,
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final height = widget.height;

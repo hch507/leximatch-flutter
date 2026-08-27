@@ -163,7 +163,7 @@ class HintDialog extends StatelessWidget {
               const SizedBox(height: 15),
 
               Text(
-                '원하는 힌트를 선택하고 광고를 시청하세요!',
+                '광고 시청 후 힌트를 확인하세요!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: isSmall ? 13 : 14,
@@ -185,7 +185,7 @@ class HintDialog extends StatelessWidget {
                       text: '5%의 확률로 정답에 포함된\n',
                     ),
                     TextSpan(
-                      text: '초성 1글자',
+                      text: '자모 1글자',
                       style: TextStyle(
                         color: Color(0xFF1659C7),
                         fontWeight: FontWeight.w900,
