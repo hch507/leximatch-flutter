@@ -182,8 +182,10 @@ class HintDialog extends StatelessWidget {
                 description: const TextSpan(
                   children: [
                     TextSpan(
-                      text: '5%의 확률로 정답에 포함된\n',
-                    ),
+                        text: '5%의 확률로 정답에 포함된\n',
+                        style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w600)),
                     TextSpan(
                       text: '자모 1글자',
                       style: TextStyle(
@@ -193,6 +195,8 @@ class HintDialog extends StatelessWidget {
                     ),
                     TextSpan(
                       text: '를 알려드려요!',
+                      style: TextStyle(
+                          color: Colors.black87, fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -255,6 +259,8 @@ class HintDialog extends StatelessWidget {
                     ),
                     TextSpan(
                       text: ' 등급의\n랜덤 힌트를 받아요!',
+                      style: TextStyle(
+                          color: Colors.black87, fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -294,7 +300,6 @@ class HintDialog extends StatelessWidget {
     );
   }
 }
-
 
 // ─────────────────────────────────────
 // Hint Card
@@ -343,8 +348,8 @@ class HintCard extends StatelessWidget {
           // 이미지
           Image.asset(
             imagePath,
-            width: 60,
-            height: 60,
+            width: 70,
+            height: 70,
             fit: BoxFit.contain,
           ),
 
@@ -364,8 +369,6 @@ class HintCard extends StatelessWidget {
                     color: titleColor,
                   ),
                 ),
-
-                const SizedBox(height: 3),
 
                 // 설명
                 Text.rich(
