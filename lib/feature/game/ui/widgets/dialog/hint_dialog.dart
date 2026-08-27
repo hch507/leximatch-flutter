@@ -182,7 +182,7 @@ class HintDialog extends StatelessWidget {
                 description: const TextSpan(
                   children: [
                     TextSpan(
-                        text: '5%의 확률로 정답에 포함된\n',
+                        text: '10%의 확률로 정답에 포함된\n',
                         style: TextStyle(
                             color: Colors.black87,
                             fontWeight: FontWeight.w600)),
