@@ -328,7 +328,7 @@ class HintCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 120,
+      height: 100,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -343,12 +343,12 @@ class HintCard extends StatelessWidget {
           // 이미지
           Image.asset(
             imagePath,
-            width: 100,
-            height: 100,
+            width: 60,
+            height: 60,
             fit: BoxFit.contain,
           ),
 
-          const SizedBox(width: 8),
+          const SizedBox(width: 5),
 
           // 오른쪽 영역
           Expanded(
@@ -359,31 +359,31 @@ class HintCard extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: titleColor,
                   ),
                 ),
 
-                const SizedBox(height: 4),
+                const SizedBox(height: 3),
 
                 // 설명
                 Text.rich(
                   description,
                   style: const TextStyle(
-                    fontSize: 12,
+                    fontSize: 10,
                     height: 1.4,
                     color: Color(0xFF333333),
                   ),
                 ),
 
-                const SizedBox(height: 6),
+                const SizedBox(height: 3),
 
                 // 버튼 오른쪽 정렬
                 Align(
                   alignment: Alignment.centerRight,
                   child: LexiGameButton(
-                    height: 25,
+                    height: 20,
                     width: 70,
                     text: buttonText,
                     type: buttonType,

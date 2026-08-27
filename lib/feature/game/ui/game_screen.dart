@@ -485,31 +485,27 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
     _showHintDialog(context);
   }
   Future<void> _onInitialHintAdWatch() async {
-    debugPrint("_onInitialHintAdWatch 시작");
+
     try {
       final hint = await ref.read(initialHintProvider.notifier).fetchInitialHint();
 
       if (hint == null) {
-        debugPrint("힌트를 불러오지 못했어요");
+        showToast("힌트를 불러오지 못했어요");
         return;
       }
       if (!mounted) return;
 
       Navigator.pop(context);
-      if (hint.isSuccess) {
-        _showSuccessInitialHintResultDialog(hint.initial);
-      } else {
-        _showFailInitialHintResultDialog();
-      }
-      // _showRewardAd(
-      //   onComplete: () {
-      //     if (hint.isSuccess) {
-      //       _showSuccessInitialHintResultDialog(hint.initial);
-      //     } else {
-      //       _showFailInitialHintResultDialog();
-      //     }
-      //   },
-      // );
+
+      _showRewardAd(
+        onComplete: () {
+          if (hint.isSuccess) {
+            _showSuccessInitialHintResultDialog(hint.initial);
+          } else {
+            _showFailInitialHintResultDialog();
+          }
+        },
+      );
 
     } catch (e, st) {
       debugPrint("힌트 조회 실패: $e");
