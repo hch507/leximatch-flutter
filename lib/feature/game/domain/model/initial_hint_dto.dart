@@ -10,7 +10,7 @@ class InitialHintDto {
   factory InitialHintDto.fromJson(Map<String, dynamic> json) {
     return InitialHintDto(
       initial: json['initial'] as String?,
-      isSuccess: json['isSuccess'] as bool,
+      isSuccess: json['is_success'] as bool,
     );
   }
 }

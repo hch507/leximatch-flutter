@@ -52,6 +52,14 @@ class GameRepositoryImpl implements GameRepository {
 
   @override
   Future<InitialHintDto> fetchInitialHint() async {
-    return InitialHintDto(initial: "ㅗ", isSuccess: true);
+    final result = await apiClient.request<InitialHintDto>(
+      '/api/games/initial-hint',
+      method: 'GET',
+      fromJson: (json) {
+        return InitialHintDto.fromJson(json as Map<String, dynamic>);
+      },
+    );
+
+    return result!;
   }
 }
