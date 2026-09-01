@@ -187,7 +187,7 @@ class HintDialog extends StatelessWidget {
                             color: Colors.black87,
                             fontWeight: FontWeight.w600)),
                     TextSpan(
-                      text: '자모 1글자',
+                      text: ' 한 글자',
                       style: TextStyle(
                         color: Color(0xFF1659C7),
                         fontWeight: FontWeight.w900,
