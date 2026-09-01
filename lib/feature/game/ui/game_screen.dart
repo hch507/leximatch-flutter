@@ -8,6 +8,7 @@ import 'package:leximatch/feature/game/domain/model/hint_dto.dart';
 import 'package:leximatch/feature/game/ui/providers/game_state_provider.dart';
 import 'package:leximatch/feature/game/ui/providers/hint_state_provider.dart';
 import 'package:leximatch/feature/game/ui/providers/initial_hint_state_provider.dart';
+import 'package:leximatch/feature/game/ui/providers/opening_hint_state_provider.dart';
 import 'package:leximatch/feature/game/ui/providers/state/game_ui_state.dart';
 import 'package:leximatch/feature/game/ui/style/hint_result_dialog_style.dart';
 import 'package:leximatch/feature/game/ui/widgets/card/research_card.dart';
@@ -17,6 +18,7 @@ import 'package:leximatch/feature/game/ui/widgets/dialog/correct_answer_dialog.d
 import 'package:leximatch/feature/game/ui/widgets/dialog/f_initial_hint_result_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/hint_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/hint_result_dialog.dart';
+import 'package:leximatch/feature/game/ui/widgets/dialog/opening_hint_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/s_initial_hint_result_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/dialog/support_send_dialog.dart';
 import 'package:leximatch/feature/game/ui/widgets/textfield/lexi_text_field.dart';
@@ -31,17 +33,95 @@ import '../../../core/widget/button/pressable_image_button.dart';
 import '../../../core/widget/toast.dart';
 import '../domain/model/game_dto.dart';
 
-class GameScreen extends StatelessWidget {
+class GameScreen extends ConsumerStatefulWidget {
   const GameScreen({super.key});
+
+  @override
+  ConsumerState<GameScreen> createState() => _GameScreenState();
+}
+class _GameScreenState extends ConsumerState<GameScreen> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadOpeningHint();
+    });
+  }
+
+  Future<void> _loadOpeningHint() async {
+    try {
+      final hint = await ref
+          .read(openingHintProvider.notifier)
+          .fetchOpeningHint();
+
+      if (!mounted) return;
+      await Future.delayed(const Duration(seconds: 5));
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (hint == null) return;
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => OpeningHintDialog(
+          word: hint.userInput,
+          onConfirm: () {
+            Navigator.pop(context);
+          },
+        ),
+      );
+    } catch (e, st) {
+      debugPrint("오프닝 힌트 조회 실패: $e");
+      debugPrintStack(stackTrace: st);
+
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      showToast("힌트를 불러오지 못했어요.\n잠시 후 다시 시도해주세요.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: GameBody(),
+      body: Stack(
+        children: [
+          const GameBody(),
+
+          if (_isLoading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
+// class GameScreen extends StatelessWidget {
+//   const GameScreen({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       resizeToAvoidBottomInset: false,
+//       body: GameBody(),
+//     );
+//   }
+// }
 
 class GameAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const GameAppBar({

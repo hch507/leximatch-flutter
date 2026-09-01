@@ -62,4 +62,15 @@ class GameRepositoryImpl implements GameRepository {
 
     return result!;
   }
+
+  @override
+  Future<HintDto?> fetchOpeningHint() {
+    return apiClient.request<HintDto>(
+      '/api/games/opening-hint',
+      method: 'GET',
+      fromJson: (json) {
+        return HintDto.fromJson(json as Map<String, dynamic>);
+      },
+    );
+  }
 }

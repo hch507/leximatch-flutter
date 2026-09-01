@@ -9,5 +9,7 @@ abstract class GameRepository {
 
   Future<HintDto?> fetchHint();
 
+  Future<HintDto?> fetchOpeningHint();
+
   Future<InitialHintDto> fetchInitialHint();
 }
