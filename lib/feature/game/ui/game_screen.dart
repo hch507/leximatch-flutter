@@ -58,7 +58,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
           .fetchOpeningHint();
 
       if (!mounted) return;
-      await Future.delayed(const Duration(seconds: 5));
+
       setState(() {
         _isLoading = false;
       });
