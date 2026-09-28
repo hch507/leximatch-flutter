@@ -165,6 +165,37 @@ class LexiButtonStyle {
           shadowColor: Color(0xFF30268A),
           strokeColor: Color(0xFF5B4BD1),
         );
+      case LexiButtonType.normal_mode:
+        return const LexiButtonStyle(
+          normalColors: [
+            Color(0xFF8EDB55),
+            Color(0xFF55B83E),
+          ],
+          pressedColors: [
+            Color(0xFF72C847),
+            Color(0xFF429D32),
+          ],
+          borderColor: Color(0xFF4A9E35),
+          pressedBorderColor: Color(0xFF37852A),
+          shadowColor: Color(0xFF39852C),
+          strokeColor: Color(0xFF55B83E),
+        );
+
+      case LexiButtonType.hard_mode:
+        return const LexiButtonStyle(
+          normalColors: [
+            Color(0xFFB18CFF),
+            Color(0xFF7955D9),
+          ],
+          pressedColors: [
+            Color(0xFF9875E8),
+            Color(0xFF6544BA),
+          ],
+          borderColor: Color(0xFF6948B8),
+          pressedBorderColor: Color(0xFF54379E),
+          shadowColor: Color(0xFF53399A),
+          strokeColor: Color(0xFF7955D9),
+        );
       case LexiButtonType.gray:
         return const LexiButtonStyle(
           normalColors: [
@@ -180,6 +211,8 @@ class LexiButtonStyle {
           shadowColor: Color(0xFF6B7280),
           strokeColor: Color(0xFF9CA3AF),
         );
+
+
     }
   }
 }

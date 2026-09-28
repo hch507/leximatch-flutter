@@ -12,4 +12,7 @@ enum LexiButtonType {
   rare,
   normal,
   light,
+
+  normal_mode,
+  hard_mode
 }
