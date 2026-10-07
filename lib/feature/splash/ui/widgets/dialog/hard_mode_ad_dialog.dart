@@ -52,7 +52,7 @@ class HardModeAdDialog extends StatelessWidget {
                   ),
                 ),
                 TextSpan(
-                  text: '에 도전해보세요!',
+                  text: ' 입장권',
                 ),
               ],
             ),
