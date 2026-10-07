@@ -14,6 +14,9 @@ class HintNotifier extends AutoDisposeAsyncNotifier<HintUiState> {
   bool _isFetching = false;
   @override
   Future<HintUiState> build() async {
+    ref.onDispose(() {
+      print('🔥 HintNotifier DISPOSE');
+    });
     return const HintUiState();
   }
 
@@ -25,6 +28,34 @@ class HintNotifier extends AutoDisposeAsyncNotifier<HintUiState> {
 
     try {
       final hint = await _repository.fetchHint();
+
+      if (hint == null) {
+        state = AsyncData(previous);
+        return null;
+      }
+      state = AsyncData(
+        previous.copyWith(
+          hintResult: hint,
+        ),
+      );
+
+      return hint;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    } finally {
+      _isFetching = false;
+    }
+  }
+
+  Future<HintDto?> fetchHardHint() async {
+
+    if (_isFetching) return null;
+    _isFetching = true;
+    final previous = state.value ?? const HintUiState();
+
+    try {
+      final hint = await _repository.fetchHardHint();
 
       if (hint == null) {
         state = AsyncData(previous);

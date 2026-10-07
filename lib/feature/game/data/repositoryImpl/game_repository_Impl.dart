@@ -73,4 +73,47 @@ class GameRepositoryImpl implements GameRepository {
       },
     );
   }
+
+  @override
+  Future<HintDto?> fetchHardHint() {
+    return apiClient.request<HintDto>(
+      '/api/games/hard-hint',
+      method: 'GET',
+      fromJson: (json) {
+        return HintDto.fromJson(json as Map<String, dynamic>);
+      },
+    );
+  }
+
+  @override
+  Future<InitialHintDto> fetchHardInitialHint() async {
+    final result = await apiClient.request<InitialHintDto>(
+      '/api/games/initial-hint',
+      method: 'GET',
+      fromJson: (json) {
+        return InitialHintDto.fromJson(json as Map<String, dynamic>);
+      },
+    );
+
+    return result!;
+  }
+
+  @override
+  Future<GameDto?> fetchHardSimilarity(String keyword) async {
+    final deviceId = await deviceRepository.getOrCreateDeviceId();
+    print('guess deviceId = $deviceId');
+    return apiClient.request<GameDto>(
+      '/api/games/hard-guess',
+      method: 'POST',
+      data: {
+        'input': keyword,
+        'device_id': deviceId,
+      },
+      fromJson: (json) {
+        return GameDto.fromJson(
+          json as Map<String, dynamic>,
+        );
+      },
+    );
+  }
 }
