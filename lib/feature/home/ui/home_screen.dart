@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:leximatch/core/widget/button/lexi_game_button/lexi_game_button_type.dart';
 import 'package:leximatch/feature/home/ui/providers/home_ad_watched_state_provider.dart';
 import 'package:leximatch/feature/home/ui/providers/home_record_state_provider.dart';
+import 'package:leximatch/feature/home/ui/providers/notice_state_provider.dart';
 import 'package:leximatch/feature/home/ui/widgets/card/mode_card_frame.dart';
 
 import '../../../core/ad/reward_manager.dart';
@@ -106,6 +107,7 @@ class _HomeContent extends ConsumerWidget {
                         buttonText: '시작하기',
                         buttonType: LexiButtonType.normal_mode,
                         color: Colors.green,
+                        isCleared: normalRecord != null,
                         clearRecord: normalRecord != null
                             ? '${normalRecord.elapsedTime}초'
                             : '-',
@@ -133,19 +135,12 @@ class _HomeContent extends ConsumerWidget {
           Expanded(
             flex: 2,
             child: Padding(
-              padding: EdgeInsets.all(12),
-              child: LexiMatchBox(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  children: const [],
-                ),
-              ),
+              padding: const EdgeInsets.all(10),
+              child: _NoticeCard()
             ),
           ),
-
         ],
       ),
-
     );
   }
 }
@@ -188,6 +183,7 @@ class _TodayHeader extends StatelessWidget {
     );
   }
 }
+
 class HardModeCard extends ConsumerStatefulWidget {
   final RecordDto? normalRecord;
   final RecordDto? hardRecord;
@@ -246,7 +242,7 @@ class _HardModeCardState extends ConsumerState<HardModeCard> {
         }
 
         // 이미 오늘 광고를 시청한 경우
-        context.go(RoutePath.game);
+        context.go(RoutePath.hardGame);
       },
     );
   }
@@ -272,13 +268,11 @@ class _HardModeCardState extends ConsumerState<HardModeCard> {
         debugPrint('하드 모드 광고 시청 완료');
 
         try {
-          await ref
-              .read(homeAdWatchedNotifierProvider.notifier)
-              .saveAdWatch();
+          await ref.read(homeAdWatchedNotifierProvider.notifier).saveAdWatch();
 
           if (!mounted) return;
 
-          context.go(RoutePath.game);
+          context.go(RoutePath.hardGame);
         } catch (e, stackTrace) {
           debugPrint('광고 시청 기록 저장 실패: $e');
           debugPrintStack(stackTrace: stackTrace);
@@ -322,19 +316,75 @@ class _HardModeCardState extends ConsumerState<HardModeCard> {
         height: 50,
       ),
       title: '하드 모드',
-      description: '더 어려운 단어에 도전해보세요!',
+      isCleared: widget.hardRecord != null,
+      description: '다양한 품사의 단어에 도전해보세요!',
       buttonText: '도전하기',
       buttonType: LexiButtonType.hard_mode,
       color: Colors.deepPurple,
       clearRecord: widget.hardRecord != null
           ? '${widget.hardRecord!.elapsedTime}초'
           : '-',
-      rank: widget.hardRecord != null
-          ? '${widget.hardRecord!.rank}등'
-          : '-',
+      rank: widget.hardRecord != null ? '${widget.hardRecord!.rank}등' : '-',
       locked: widget.normalRecord == null,
       lockMessage: '노말 모드를 클리어하면\n도전할 수 있어요!',
       onTap: _onTap,
+    );
+  }
+}
+class _NoticeCard extends ConsumerWidget {
+  const _NoticeCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(noticeNotifierProvider);
+    final notice = state.valueOrNull;
+
+    return LexiMatchBox(
+      color: const Color(0xFFE8F0D8),
+      borderColor: const Color(0xFFC9DDB0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 10,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Image.asset(
+              'assets/images/ic_notice_lodo.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            flex: 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '오늘의 메시지',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF4F9B35),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  notice?.notice?.content ?? '오늘도 모맨틀에\n도전해보세요!',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    height: 1.3,
+                    color: Color(0xFF60483A),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

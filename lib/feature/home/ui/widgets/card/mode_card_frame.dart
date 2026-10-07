@@ -15,6 +15,7 @@ class ModeCardFrame extends StatelessWidget {
     required this.onTap,
     required this.color,
     required this.clearRecord,
+    this.isCleared = false,
 
     required this.rank,
     this.locked = false,
@@ -32,6 +33,7 @@ class ModeCardFrame extends StatelessWidget {
   final String rank;
   final bool locked;
   final String? lockMessage;
+  final bool isCleared;
 
   @override
   Widget build(BuildContext context) {
@@ -59,29 +61,49 @@ class ModeCardFrame extends StatelessWidget {
                         const SizedBox(width: 10),
 
                         Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Stack(
                             children: [
-                              Text(
-                                title,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: color,
-                                ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    title,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: color,
+                                    ),
+                                  ),
+                                  Text(
+                                    description,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                description,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
+
+                              if (isCleared)
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  bottom: 0,
+                                  child: Center(
+                                    child: Transform.rotate(
+                                      angle: -0.1,
+                                      child: Image.asset(
+                                        'assets/images/ic_clear_stamp.png',
+                                        width: 65,
+                                        height: 65,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ),
-
                       ],
                     ),
                   ),
@@ -105,7 +127,7 @@ class ModeCardFrame extends StatelessWidget {
                             'assets/images/ic_timer.png',
                             fit: BoxFit.contain,
                           ),
-                          title: '클리어 기록',
+                          title: '클리어 타임',
                           value: clearRecord,
                         ),
                       ),
@@ -122,7 +144,7 @@ class ModeCardFrame extends StatelessWidget {
                             'assets/images/ic_trophy.png',
                             fit: BoxFit.contain,
                           ),
-                          title: '최초 클리어 랭크',
+                          title: '클리어 랭크',
                           value: rank,
                         ),
                       ),
