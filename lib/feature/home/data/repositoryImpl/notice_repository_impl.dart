@@ -13,8 +13,8 @@ class NoticeRepositoryImpl implements NoticeRepository{
 
   NoticeRepositoryImpl(this.apiClient, this.deviceRepository);
   @override
-  Future<NoticeDto> fetchNotice() async {
-    return NoticeDto(content: "test");
+  Future<NoticeDto?> fetchNotice() async {
+    throw Exception('공지사항 조회 실패');
 
   }
 
