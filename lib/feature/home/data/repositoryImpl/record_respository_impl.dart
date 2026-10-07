@@ -19,8 +19,8 @@ class RecordRepositoryImpl implements RecordRepository {
         rank: "3",
         elapsedTime: "18:00:00",
       ),
-      // normalRecord: null,
       hardRecord: null,
+      // hardRecord: RecordDto(rank: "4", elapsedTime: "18:00:00"),
     );
   }
 
