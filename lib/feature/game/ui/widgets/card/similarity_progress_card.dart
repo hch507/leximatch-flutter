@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class SimilarityProgressCard extends StatefulWidget {
   final String word;
   final String rank;
-
+  final Color borderColor;
 
   /// 기본 카드 높이
   final double height;
@@ -14,6 +14,7 @@ class SimilarityProgressCard extends StatefulWidget {
     required this.word,
     required this.rank,
     this.height = 100,
+    this.borderColor = const Color(0xFFE8D9C7)
   });
 
   @override
@@ -82,7 +83,7 @@ class _SimilarityProgressCardState extends State<SimilarityProgressCard> {
         color: const Color(0xFFFFFEFB),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: const Color(0xFFE8D9C7),
+          color: widget.borderColor,
           width: 1.2,
         ),
         boxShadow: [
