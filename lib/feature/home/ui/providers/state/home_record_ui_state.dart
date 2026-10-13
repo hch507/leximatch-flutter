@@ -1,5 +1,4 @@
 import '../../../domain/model/home_record_dto.dart';
-
 class HomeRecordUiState {
   final HomeRecordDto? record;
 
@@ -7,13 +6,7 @@ class HomeRecordUiState {
     this.record,
   });
 
-  HomeRecordDto get displayRecord {
-    return record ??
-        HomeRecordDto(
-          normalRecord: null,
-          hardRecord: null,
-        );
-  }
+  HomeRecordDto? get displayRecord => record;
 
   HomeRecordUiState copyWith({
     HomeRecordDto? record,

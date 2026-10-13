@@ -14,13 +14,18 @@ class RecordRepositoryImpl implements RecordRepository {
 
   @override
   Future<HomeRecordDto?> fetchRecord() async {
-    return HomeRecordDto(
-      normalRecord: RecordDto(
-        rank: "3",
-        elapsedTime: "18:00:00",
-      ),
-      hardRecord: null,
-      // hardRecord: RecordDto(rank: "4", elapsedTime: "18:00:00"),
+    final deviceId = await deviceRepository.getOrCreateDeviceId();
+    return await apiClient.request<HomeRecordDto>(
+      '/api/record',
+      method: 'GET',
+      queryParameters: {
+        'device_id': deviceId,
+      },
+      fromJson: (json) {
+        return HomeRecordDto.fromJson(
+          json as Map<String, dynamic>,
+        );
+      },
     );
   }
 
