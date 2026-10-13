@@ -1,15 +1,15 @@
 class AdWatchDto {
-  final bool watched;
+  final bool adWatched;
 
   AdWatchDto({
-    required this.watched,
+    required this.adWatched,
   });
 
   factory AdWatchDto.fromJson(
       Map<String, dynamic> json,
       ) {
     return AdWatchDto(
-      watched: json['watched'] as bool,
+      adWatched: json['ad_watched'] as bool,
     );
   }
 }

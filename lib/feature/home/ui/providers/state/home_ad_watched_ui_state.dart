@@ -10,7 +10,7 @@ class HomeAdWatchedUiState {
   AdWatchDto get displayAdWatch {
     return adWatch ??
         AdWatchDto(
-          watched: false,
+          adWatched: false,
         );
   }
 

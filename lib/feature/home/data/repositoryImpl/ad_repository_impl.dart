@@ -11,13 +11,37 @@ class AdRepositoryImpl implements AdRepository{
   AdRepositoryImpl(this.apiClient, this.deviceRepository);
   @override
   Future<AdWatchDto> fetchAdWatch() async {
-    return AdWatchDto(watched: false);
+    final deviceId = await deviceRepository.getOrCreateDeviceId();
+
+    final result = await apiClient.request<AdWatchDto>(
+      '/api/ad/today',
+      method: 'GET',
+      queryParameters: {
+        'device_id': deviceId,
+      },
+      fromJson: (json) {
+        return AdWatchDto.fromJson(
+          json as Map<String, dynamic>,
+        );
+      },
+    );
+
+    return result!;
   }
+
 
   @override
   Future<void> saveAdWatch() async {
+    final deviceId = await deviceRepository.getOrCreateDeviceId();
 
-
+    await apiClient.request<void>(
+      '/api/ad/save',
+      method: 'POST',
+      data: {
+        'device_id': deviceId,
+      },
+      fromJson: (_) {},
+    );
   }
 
 }

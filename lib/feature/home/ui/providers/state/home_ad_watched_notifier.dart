@@ -12,14 +12,16 @@ class HomeAdWatchedNotifier
 
   late final AdRepository _adRepository =
   ref.read(adRepositoryProvider);
-
+  bool _isFetching = false;
   @override
   FutureOr<HomeAdWatchedUiState> build() {
     return const HomeAdWatchedUiState();
   }
 
-  Future<void> fetchAdWatch() async {
-    state = const AsyncLoading();
+  Future<AdWatchDto?> fetchAdWatch() async {
+    if (_isFetching) return null;
+
+    _isFetching = true;
 
     try {
       final adWatch = await _adRepository.fetchAdWatch();
@@ -29,8 +31,15 @@ class HomeAdWatchedNotifier
           adWatch: adWatch,
         ),
       );
-    } catch (e, stackTrace) {
-      state = AsyncError(e, stackTrace);
+
+      return adWatch;
+
+      return adWatch;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    } finally {
+      _isFetching = false;
     }
   }
 
@@ -43,7 +52,7 @@ class HomeAdWatchedNotifier
       state = AsyncData(
         HomeAdWatchedUiState(
           adWatch: AdWatchDto(
-            watched: true,
+            adWatched: true,
           ),
         ),
       );
