@@ -110,7 +110,7 @@ class ModeCardFrame extends StatelessWidget {
                 ),
 
                 Container(
-                  height: 60,
+                  height: 50,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.7),
                     border: Border(
@@ -160,7 +160,7 @@ class ModeCardFrame extends StatelessWidget {
                     child: LexiGameButton(
                       text: buttonText,
                       type: buttonType,
-                      height: 40,
+                      height: 30,
                       onTap: onTap,
                     ),
                   ),
@@ -234,7 +234,7 @@ class _RecordItem extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(width: 5,),
+        SizedBox(width: 5),
         SizedBox(
           width: 30,
           height: 30,
@@ -257,7 +257,7 @@ class _RecordItem extends StatelessWidget {
             Text(
               value,
               style: const TextStyle(
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
               ),
             ),

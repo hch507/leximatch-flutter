@@ -71,7 +71,7 @@ class _HomeContent extends ConsumerWidget {
       child: Column(
         children: [
           Expanded(
-            flex: 2,
+            flex: 1,
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -83,14 +83,16 @@ class _HomeContent extends ConsumerWidget {
             ),
           ),
           Expanded(
-            flex: 7,
+            flex: 8,
             child: Padding(
               padding: EdgeInsets.all(12),
               child: LexiMatchBox(
                 padding: const EdgeInsets.all(12),
                 child: Column(
                   children: [
-                    const _TodayHeader(),
+                    _TodayHeader(
+                      record?.recordDate
+                    ),
 
                     const SizedBox(height: 5),
 
@@ -109,7 +111,7 @@ class _HomeContent extends ConsumerWidget {
                         color: Colors.green,
                         isCleared: normalRecord != null,
                         clearRecord: normalRecord != null
-                            ? '${normalRecord.elapsedTime}초'
+                            ? '${normalRecord.elapsedTime}'
                             : '-',
                         rank: normalRecord != null
                             ? '${normalRecord.rank}등'
@@ -135,9 +137,7 @@ class _HomeContent extends ConsumerWidget {
           Expanded(
             flex: 2,
             child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: _NoticeCard()
-            ),
+                padding: const EdgeInsets.all(10), child: _NoticeCard()),
           ),
         ],
       ),
@@ -146,8 +146,16 @@ class _HomeContent extends ConsumerWidget {
 }
 
 class _TodayHeader extends StatelessWidget {
-  const _TodayHeader();
+  final String? recordDate;
 
+  const _TodayHeader(this.recordDate);
+  String get formattedDate {
+    if (recordDate == null) return '';
+
+    final date = DateTime.parse(recordDate!);
+
+    return '${date.year}년 ${date.month}월 ${date.day}일';
+  }
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -158,7 +166,7 @@ class _TodayHeader extends StatelessWidget {
           color: Colors.blue,
         ),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -170,7 +178,7 @@ class _TodayHeader extends StatelessWidget {
                 ),
               ),
               Text(
-                '2026년 9월 22일 (화)',
+                formattedDate,
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey,
@@ -220,31 +228,31 @@ class _HardModeCardState extends ConsumerState<HardModeCard> {
       homeAdWatchedNotifierProvider.notifier,
     );
 
-    await notifier.fetchAdWatch();
+    try {
+      final adWatch = await notifier.fetchAdWatch();
 
-    final state = ref.read(
-      homeAdWatchedNotifierProvider,
-    );
+      if (!mounted) return;
 
-    state.when(
-      loading: () {
-        // fetchAdWatch() 완료 후에는 일반적으로 호출되지 않음
-      },
-      error: (error, stackTrace) {
-        showToast(
-          '광고 시청 여부를 확인하지 못했습니다.',
-        );
-      },
-      data: (data) {
-        if (data.adWatch?.watched != true) {
-          _showAdDialog();
-          return;
-        }
+      if (adWatch == null) {
+        showToast('광고 시청 여부를 확인하지 못했습니다.');
+        return;
+      }
 
-        // 이미 오늘 광고를 시청한 경우
-        context.go(RoutePath.hardGame);
-      },
-    );
+      if (!adWatch.adWatched) {
+        _showAdDialog();
+        return;
+      }
+
+      // 이미 오늘 광고를 시청한 경우
+      context.go(RoutePath.hardGame);
+    } catch (e, st) {
+      debugPrint('광고 시청 여부 조회 실패: $e');
+      debugPrintStack(stackTrace: st);
+
+      if (!mounted) return;
+
+      showToast('광고 시청 여부를 확인하지 못했습니다.');
+    }
   }
 
   void _showAdDialog() {
@@ -331,6 +339,7 @@ class _HardModeCardState extends ConsumerState<HardModeCard> {
     );
   }
 }
+
 class _NoticeCard extends ConsumerWidget {
   const _NoticeCard();
 
