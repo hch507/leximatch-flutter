@@ -14,8 +14,14 @@ class NoticeRepositoryImpl implements NoticeRepository{
   NoticeRepositoryImpl(this.apiClient, this.deviceRepository);
   @override
   Future<NoticeDto?> fetchNotice() async {
-    throw Exception('공지사항 조회 실패');
-
+    return await apiClient.request<NoticeDto>(
+      '/api/notice',
+      method: 'GET',
+      fromJson: (json) {
+        return NoticeDto.fromJson(
+          json as Map<String, dynamic>,
+        );
+      },
+    );
   }
-
 }
