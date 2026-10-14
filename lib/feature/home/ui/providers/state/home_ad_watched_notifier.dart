@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../domain/model/ad_watch_dto.dart';
@@ -13,6 +14,7 @@ class HomeAdWatchedNotifier
   late final AdRepository _adRepository =
   ref.read(adRepositoryProvider);
   bool _isFetching = false;
+  bool _isSaving = false;
   @override
   FutureOr<HomeAdWatchedUiState> build() {
     return const HomeAdWatchedUiState();
@@ -44,8 +46,9 @@ class HomeAdWatchedNotifier
   }
 
   Future<void> saveAdWatch() async {
-    state = const AsyncLoading();
+    if (_isSaving) return;
 
+    _isSaving = true;
     try {
       await _adRepository.saveAdWatch();
 
@@ -57,8 +60,12 @@ class HomeAdWatchedNotifier
         ),
       );
     } catch (e, stackTrace) {
-      state = AsyncError(e, stackTrace);
+      debugPrint('saveAdWatch 원본 오류: $e');
+      debugPrintStack(stackTrace: stackTrace);
+
       rethrow;
+    } finally {
+      _isSaving = false;
     }
   }
 }

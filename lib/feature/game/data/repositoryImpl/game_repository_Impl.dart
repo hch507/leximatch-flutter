@@ -88,7 +88,7 @@ class GameRepositoryImpl implements GameRepository {
   @override
   Future<InitialHintDto> fetchHardInitialHint() async {
     final result = await apiClient.request<InitialHintDto>(
-      '/api/games/initial-hint',
+      '/api/games/initial-hard-hint',
       method: 'GET',
       fromJson: (json) {
         return InitialHintDto.fromJson(json as Map<String, dynamic>);

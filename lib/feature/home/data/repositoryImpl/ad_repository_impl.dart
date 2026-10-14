@@ -34,13 +34,15 @@ class AdRepositoryImpl implements AdRepository{
   Future<void> saveAdWatch() async {
     final deviceId = await deviceRepository.getOrCreateDeviceId();
 
-    await apiClient.request<void>(
+    await apiClient.request<AdWatchDto>(
       '/api/ad/save',
       method: 'POST',
       data: {
         'device_id': deviceId,
       },
-      fromJson: (_) {},
+      fromJson: (json) => AdWatchDto.fromJson(
+        json as Map<String, dynamic>,
+      ),
     );
   }
 
