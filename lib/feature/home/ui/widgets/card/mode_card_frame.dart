@@ -110,7 +110,7 @@ class ModeCardFrame extends StatelessWidget {
                 ),
 
                 Container(
-                  height: 50,
+                  height: 60,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.7),
                     border: Border(
