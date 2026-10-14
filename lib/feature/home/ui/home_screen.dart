@@ -330,7 +330,7 @@ class _HardModeCardState extends ConsumerState<HardModeCard> {
       buttonType: LexiButtonType.hard_mode,
       color: Colors.deepPurple,
       clearRecord: widget.hardRecord != null
-          ? '${widget.hardRecord!.elapsedTime}초'
+          ? '${widget.hardRecord!.elapsedTime}'
           : '-',
       rank: widget.hardRecord != null ? '${widget.hardRecord!.rank}등' : '-',
       locked: widget.normalRecord == null,
