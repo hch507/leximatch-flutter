@@ -13,8 +13,11 @@ class GameNotifier extends AutoDisposeAsyncNotifier<GameUiState> {
 
   @override
   Future<GameUiState> build() async {
-
+    ref.onDispose(() {
+      print('🔥 GameNotifier DISPOSE');
+    });
     return const GameUiState();
+
   }
 
 
@@ -28,6 +31,50 @@ class GameNotifier extends AutoDisposeAsyncNotifier<GameUiState> {
 
     try {
       final result = await _repository.fetchSimilarity(keyword);
+
+      if (result == null) {
+        state = AsyncData(previous);
+        return;
+      }
+
+      final updatedResults = [
+        result,
+        ...previous.results.where(
+              (e) => e.userInput != result.userInput,
+        ),
+      ];
+
+      state = AsyncData(
+        previous.copyWith(
+          myResult: result,
+          results: updatedResults,
+          isWordNotFound: false,
+        ),
+      );
+    } catch (e, st) {
+      print("------------------------------에러 발생: $e, $st");
+      if (e is ApiException && e.resultCode == 6001) {
+        state = AsyncData(
+          previous.copyWith(
+            isWordNotFound: true,
+          ),
+        );
+        return;
+      }
+      state = AsyncError(e, st);
+    }
+  }
+
+  Future<void> fetchHardSimilarity(String keyword) async {
+    if (state.isLoading) return;
+    final previous = state.value ?? const GameUiState();
+
+    state = const AsyncLoading<GameUiState>().copyWithPrevious(
+      AsyncData(previous),
+    );
+
+    try {
+      final result = await _repository.fetchHardSimilarity(keyword);
 
       if (result == null) {
         state = AsyncData(previous);

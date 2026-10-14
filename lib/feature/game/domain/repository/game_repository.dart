@@ -12,4 +12,11 @@ abstract class GameRepository {
   Future<HintDto?> fetchOpeningHint();
 
   Future<InitialHintDto> fetchInitialHint();
+
+  Future<GameDto?> fetchHardSimilarity(String keyword);
+
+  Future<HintDto?> fetchHardHint();
+
+  Future<InitialHintDto> fetchHardInitialHint();
+
 }

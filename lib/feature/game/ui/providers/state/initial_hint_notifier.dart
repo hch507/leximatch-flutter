@@ -12,6 +12,9 @@ class InitialHintNotifier extends AutoDisposeAsyncNotifier<InitialHintUiState> {
 
   @override
   Future<InitialHintUiState> build() async {
+    ref.onDispose(() {
+      print('🔥 iHintNotifier DISPOSE');
+    });
     return const InitialHintUiState();
   }
 
@@ -24,6 +27,36 @@ class InitialHintNotifier extends AutoDisposeAsyncNotifier<InitialHintUiState> {
 
     try {
       final hint = await _repository.fetchInitialHint();
+
+      if (hint == null) {
+        state = AsyncData(previous);
+        return null;
+      }
+
+      state = AsyncData(
+        previous.copyWith(
+          hintResult: hint,
+        ),
+      );
+
+      return hint;
+    } catch (e, st) {
+      state = AsyncError(e, st);
+      rethrow;
+    } finally {
+      _isFetching = false;
+    }
+  }
+
+  Future<InitialHintDto?> fetchHardInitialHint() async {
+    if (_isFetching) return null;
+
+    _isFetching = true;
+
+    final previous = state.value ?? const InitialHintUiState();
+
+    try {
+      final hint = await _repository.fetchHardInitialHint();
 
       if (hint == null) {
         state = AsyncData(previous);
