@@ -1,4 +1,5 @@
 import 'package:leximatch/core/network/common/api_client.dart';
+import 'package:leximatch/feature/home/domain/model/monthly_record_dto.dart';
 
 import 'package:leximatch/feature/home/domain/repository/record_repository.dart';
 import 'package:leximatch/feature/splash/domain/repository/device_repository.dart';
@@ -27,6 +28,12 @@ class RecordRepositoryImpl implements RecordRepository {
         );
       },
     );
+  }
+
+  @override
+  Future<MonthlyRecordDto?> fetchMonthlyRecord() async {
+
+    return MonthlyRecordDto(rank: 4, score: 4325);
   }
 
 
