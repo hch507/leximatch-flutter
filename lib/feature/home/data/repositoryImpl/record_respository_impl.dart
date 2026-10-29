@@ -32,9 +32,19 @@ class RecordRepositoryImpl implements RecordRepository {
 
   @override
   Future<MonthlyRecordDto?> fetchMonthlyRecord() async {
-
-    return MonthlyRecordDto(rank: 4, score: 4325);
+    final deviceId = await deviceRepository.getOrCreateDeviceId();
+    return await apiClient.request<MonthlyRecordDto>(
+      '/api/record/monthly',
+      method: 'GET',
+      queryParameters: {
+        'deviceId': deviceId,
+      },
+      fromJson: (json) {
+        return MonthlyRecordDto.fromJson(
+          json as Map<String, dynamic>,
+        );
+      },
+    );
   }
-
 
 }

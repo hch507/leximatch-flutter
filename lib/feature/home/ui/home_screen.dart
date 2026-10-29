@@ -45,19 +45,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final state = await ref.read(noticeNotifierProvider.future);
       final notice = state.notice;
 
-      if (!mounted || notice == null) return;
 
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
-
+      if (notice == null || notice.content == null) return;
       // 공지사항 다이얼로그 표시
       await showDialog<void>(
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) {
           return NoticeDialog(
-            content: notice.content,
+            content: notice.content!,
             onConfirm: () {
               Navigator.of(dialogContext).pop();
             },
@@ -162,6 +162,7 @@ class _HomeContent extends ConsumerWidget {
       ),
     );
   }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(homeRecordNotifierProvider);
@@ -193,8 +194,9 @@ class _HomeContent extends ConsumerWidget {
               child: LexiMatchBox(
                 padding: const EdgeInsets.all(12),
                 child: MonthlyScoreBox(
-                  score: monthlyRecord?.score ?? 0,
+                  score: monthlyRecord?.totalScore ?? 0,
                   rank: monthlyRecord?.rank ?? 0,
+                  month: record?.recordDate,
                   onHelpTap: () => _showRecordHelpDialog(context),
                 ),
               ),
@@ -443,7 +445,7 @@ class _HardModeCardState extends ConsumerState<HardModeCard> {
       ),
       title: '하드 모드',
       isCleared: widget.hardRecord != null,
-      description: '다양한 품사의 단어에 도전해보세요!',
+      description: '어려운 만큼 보상도 2배!\n다양한 품사의 단어에 도전해보세요!',
       buttonText: '도전하기',
       buttonType: LexiButtonType.hard_mode,
       color: Colors.deepPurple,
@@ -519,17 +521,24 @@ class MonthlyScoreBox extends StatelessWidget {
   final int score;
   final int rank;
   final VoidCallback? onHelpTap;
+  final String? month;
 
   const MonthlyScoreBox({
     super.key,
     required this.score,
     required this.rank,
+    required this.month,
     this.onHelpTap,
   });
+  String get formattedDate {
+    if (month == null) return '';
 
+    final date = DateTime.parse(month!);
+
+    return '${date.month}월';
+  }
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
 
     final formattedScore = score.toString().replaceAllMapped(
       RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
@@ -566,7 +575,7 @@ class MonthlyScoreBox extends StatelessWidget {
                     ),
                     SizedBox(width: titleSize * 0.4),
                     Text(
-                      '${now.month}월 기록',
+                      '${formattedDate} 기록',
                       style: TextStyle(
                         fontSize: titleSize,
                         fontWeight: FontWeight.w800,
@@ -602,7 +611,7 @@ class MonthlyScoreBox extends StatelessWidget {
                   Expanded(
                     child: _StatTile(
                       borderColor: const Color(0xFFFFDFA0),
-                      label: '스코어',
+                      label: 'Point',
                       value: formattedScore,
                       unit: '점',
                       labelSize: labelSize,
@@ -613,7 +622,7 @@ class MonthlyScoreBox extends StatelessWidget {
                   Expanded(
                     child: _StatTile(
                       borderColor: const Color(0xFFBEE0A6),
-                      label: '랭킹',
+                      label: 'Rank',
                       value: rank > 0 ? '$rank' : '-',
                       unit: rank > 0 ? '위' : '',
                       labelSize: labelSize,
