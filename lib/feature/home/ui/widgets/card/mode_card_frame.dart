@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/widget/button/lexi_game_button/lexi_game_button.dart';
 import '../../../../../core/widget/button/lexi_game_button/lexi_game_button_type.dart';
+import '../overlay/lock_overlay.dart';
 
 
 class ModeCardFrame extends StatelessWidget {
@@ -170,7 +171,7 @@ class ModeCardFrame extends StatelessWidget {
 
             if (locked)
               Positioned.fill(
-                child: _LockOverlay(
+                child: LockOverlay(
                   message: lockMessage ?? '노말 모드를 클리어하면\n도전할 수 있어요!',
                 ),
               ),
@@ -181,42 +182,6 @@ class ModeCardFrame extends StatelessWidget {
   }
 }
 
-class _LockOverlay extends StatelessWidget {
-  const _LockOverlay({
-    required this.message,
-  });
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blueGrey.withOpacity(0.65),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.lock,
-              size: 48,
-              color: Colors.white,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _RecordItem extends StatelessWidget {
   const _RecordItem({

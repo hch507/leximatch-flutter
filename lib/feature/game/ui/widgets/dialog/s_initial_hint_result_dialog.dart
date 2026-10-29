@@ -37,7 +37,7 @@ class SInitialHintResultDialog extends StatelessWidget {
 
 
           const Text(
-            '글자 힌트 획득!',
+            '초성 힌트 획득!',
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.w900,
@@ -47,18 +47,6 @@ class SInitialHintResultDialog extends StatelessWidget {
 
           const SizedBox(height: 5),
 
-
-          const Text(
-            '한 글자 더~?',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF3D3028),
-            ),
-            textAlign: TextAlign.center,
-          ),
-
-          const SizedBox(height: 10),
 
           // 안내 박스
           Container(
@@ -78,7 +66,7 @@ class SInitialHintResultDialog extends StatelessWidget {
               child: Text(
                 initialWord,
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 22,
                   fontWeight: FontWeight.w900,
                   color: Color(0xFFFF4B91),
                 ),

@@ -462,6 +462,7 @@ class _ResultSectionState extends ConsumerState<ResultSection> {
             ),
             ResultHintCard(
               height: hintCardHeight,
+              top5 : top5
             ),
           ],
         );
@@ -472,10 +473,11 @@ class _ResultSectionState extends ConsumerState<ResultSection> {
 
 class ResultHintCard extends ConsumerStatefulWidget {
   final double height;
-
+  final List<GameDto> top5;
   const ResultHintCard({
     super.key,
     required this.height,
+    required this.top5,
   });
 
   @override
@@ -503,6 +505,7 @@ class _ResultHintCardState extends ConsumerState<ResultHintCard> {
       context: context,
       barrierDismissible: false,
       builder: (_) => HintDialog(
+        top5: widget.top5,
         onCancel: () {
           Navigator.pop(context);
         }, onBigHintWatch: _onInitialHintAdWatch, onRandomHintWatch: _onAdWatch,
@@ -794,6 +797,8 @@ void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
         builder: (_) => CorrectAnswerDialog(
           elapsedTime: currentResult.elapsedTime,
           rank: displayRank,
+          timeScore: '${currentResult.timeScore}',
+          rankScore: '${currentResult.rankScore}',
           onConfirm: () {
             Navigator.pop(context);
             context.go(RoutePath.home);

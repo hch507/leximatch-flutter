@@ -4,6 +4,8 @@ class GameDto {
   final String ranking;
   final String elapsedTime;
   final String clearRank;
+  final String timeScore;
+  final String rankScore;
 
   GameDto({
     required this.userInput,
@@ -11,6 +13,8 @@ class GameDto {
     required this.ranking,
     required this.elapsedTime,
     required this.clearRank,
+    required this.timeScore,
+    required this.rankScore,
   });
 
   factory GameDto.fromJson(
@@ -22,6 +26,8 @@ class GameDto {
       ranking: json['ranking'],
       elapsedTime: json['elapsed_time'] as String,
       clearRank: json['clear_rank']as String,
+      timeScore: json['time_score']as String,
+      rankScore: json['rank_score']as String,
     );
   }
 }

@@ -1,6 +1,4 @@
-
 import '../../../domain/model/game_dto.dart';
-
 
 class GameUiState {
   final GameDto? myResult;
@@ -16,17 +14,17 @@ class GameUiState {
   GameDto get displayMyResult {
     return myResult ??
         GameDto(
-          userInput: '-',
-          dist: '-',
-          ranking: '-',
-          elapsedTime: "-",
-          clearRank: "-"
-        );
+            userInput: '-',
+            dist: '-',
+            ranking: '-',
+            elapsedTime: "-",
+            clearRank: "-",
+            timeScore: '0',
+            rankScore: '0');
   }
 
   List<GameDto> get top5 {
-    final sorted = [...results]
-      ..sort((a, b) {
+    final sorted = [...results]..sort((a, b) {
         final aDist = double.tryParse(a.dist.toString()) ?? 0;
         final bDist = double.tryParse(b.dist.toString()) ?? 0;
 

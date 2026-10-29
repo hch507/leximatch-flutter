@@ -1,5 +1,5 @@
 class NoticeDto {
-  final String content;
+  final String? content;
   final String? url;
 
   NoticeDto({
@@ -11,7 +11,7 @@ class NoticeDto {
       Map<String, dynamic> json,
       ) {
     return NoticeDto(
-      content: json['content'] as String,
+      content: json['content'] as String?,
       url: json['url'] as String?,
     );
   }
