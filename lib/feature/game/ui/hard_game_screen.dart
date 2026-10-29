@@ -797,6 +797,8 @@ void _listenCorrectAnswerDialog(BuildContext context, WidgetRef ref) {
         builder: (_) => CorrectAnswerDialog(
           elapsedTime: currentResult.elapsedTime,
           rank: displayRank,
+          timeScore: '${currentResult.timeScore}',
+          rankScore: '${currentResult.rankScore}',
           onConfirm: () {
             Navigator.pop(context);
             context.go(RoutePath.home);
