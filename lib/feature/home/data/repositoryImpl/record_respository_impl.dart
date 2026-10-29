@@ -1,4 +1,5 @@
 import 'package:leximatch/core/network/common/api_client.dart';
+import 'package:leximatch/feature/home/domain/model/monthly_record_dto.dart';
 
 import 'package:leximatch/feature/home/domain/repository/record_repository.dart';
 import 'package:leximatch/feature/splash/domain/repository/device_repository.dart';
@@ -29,5 +30,21 @@ class RecordRepositoryImpl implements RecordRepository {
     );
   }
 
+  @override
+  Future<MonthlyRecordDto?> fetchMonthlyRecord() async {
+    final deviceId = await deviceRepository.getOrCreateDeviceId();
+    return await apiClient.request<MonthlyRecordDto>(
+      '/api/record/monthly',
+      method: 'GET',
+      queryParameters: {
+        'deviceId': deviceId,
+      },
+      fromJson: (json) {
+        return MonthlyRecordDto.fromJson(
+          json as Map<String, dynamic>,
+        );
+      },
+    );
+  }
 
 }

@@ -10,7 +10,7 @@ class NoticeUiState {
   NoticeDto get displayNotice {
     return notice ??
         NoticeDto(
-          content: '새로운 소식이 없습니다.',
+          content: null,
           url: null,
         );
   }

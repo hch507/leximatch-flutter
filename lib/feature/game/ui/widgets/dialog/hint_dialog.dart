@@ -1,150 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:leximatch/core/widget/dialog.dart';
+import 'package:leximatch/feature/game/domain/model/game_dto.dart';
 
 import '../../../../../core/style/colors.dart';
 import '../../../../../core/widget/button/lexi_game_button/lexi_game_button.dart';
 import '../../../../../core/widget/button/lexi_game_button/lexi_game_button_type.dart';
+import '../../../../../core/widget/toast.dart';
+import '../../../../home/ui/widgets/overlay/lock_overlay.dart';
 
-// class HintDialog extends StatelessWidget {
-//   final VoidCallback onAdWatch;
-//   final VoidCallback onCancel;
-//
-//   const HintDialog({
-//     super.key,
-//     required this.onAdWatch,
-//     required this.onCancel,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return LexiDialog(
-//       borderColor: AppColors.blueDialogBorder,
-//       titleImagePath: 'assets/images/ic_hint_title.png',
-//       titleHeight: 50,
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           SizedBox(height: 15,),
-//           const Text(
-//             '광고 시청 후\n힌트를 확인할 수 있어요!',
-//             textAlign: TextAlign.center,
-//             style: TextStyle(
-//               fontSize: 22,
-//               fontWeight: FontWeight.w900,
-//               color: Color(0xFF2F4F60),
-//               height: 1.4,
-//             ),
-//           ),
-//
-//           const SizedBox(height: 10),
-//
-//           const Text.rich(
-//             TextSpan(
-//               children: [
-//                 TextSpan(
-//                   text: '일정 확률에 따라\n',
-//                 ),
-//
-//                 TextSpan(
-//                   text: 'SS',
-//                   style: TextStyle(
-//                     color: Color(0xFFFFD84A),
-//                     fontWeight: FontWeight.w900,
-//                   ),
-//                 ),
-//
-//                 TextSpan(text: ' · '),
-//
-//                 TextSpan(
-//                   text: 'S',
-//                   style: TextStyle(
-//                     color: Color(0xFFB875FF),
-//                     fontWeight: FontWeight.w900,
-//                   ),
-//                 ),
-//
-//                 TextSpan(text: ' · '),
-//
-//                 TextSpan(
-//                   text: 'A',
-//                   style: TextStyle(
-//                     color: Color(0xFF58B8FF),
-//                     fontWeight: FontWeight.w900,
-//                   ),
-//                 ),
-//
-//                 TextSpan(text: ' · '),
-//
-//                 TextSpan(
-//                   text: 'B',
-//                   style: TextStyle(
-//                     color: Color(0xFFD7A36D),
-//                     fontWeight: FontWeight.w900,
-//                   ),
-//                 ),
-//
-//                 TextSpan(text: ' · '),
-//
-//                 TextSpan(
-//                   text: 'C',
-//                   style: TextStyle(
-//                     color: Color(0xFFB9D98D),
-//                     fontWeight: FontWeight.w900,
-//                   ),
-//                 ),
-//
-//                 TextSpan(
-//                   text: ' 등급의\n힌트가 제공됩니다.',
-//                 ),
-//               ],
-//               style: TextStyle(
-//                 fontSize: 14,
-//                 height: 1.5,
-//                 color: Color(0xFF6D8795),
-//                 fontWeight: FontWeight.w700,
-//               ),
-//             ),
-//             textAlign: TextAlign.center,
-//           ),
-//
-//           const SizedBox(height: 28),
-//
-//           Row(
-//             children: [
-//               Expanded(
-//                 child: LexiGameButton(
-//                   height: 40,
-//                   text: '닫기',
-//                   type: LexiButtonType.orange,
-//                   onTap: onCancel,
-//                 ),
-//               ),
-//               const SizedBox(width: 14),
-//               Expanded(
-//                 child: LexiGameButton(
-//                   height: 40,
-//                   text: '광고 보기',
-//                   type: LexiButtonType.blue,
-//                   onTap: onAdWatch,
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+
 class HintDialog extends StatelessWidget {
   final VoidCallback onBigHintWatch;
   final VoidCallback onRandomHintWatch;
   final VoidCallback onCancel;
-
+  final List<GameDto> top5;
   const HintDialog({
     super.key,
     required this.onBigHintWatch,
     required this.onRandomHintWatch,
     required this.onCancel,
+    required this.top5
   });
 
   @override
@@ -157,6 +32,11 @@ class HintDialog extends StatelessWidget {
         builder: (context, constraints) {
           final isSmall = constraints.maxWidth < 350;
 
+          final int ranking = top5.isNotEmpty
+              ? (int.tryParse(top5.first.ranking.toString()) ?? 9999)
+              : 9999;
+
+          final isTopRank = ranking >= 10;
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -178,26 +58,27 @@ class HintDialog extends StatelessWidget {
               // 대박 힌트
               // ─────────────────────────
               HintCard(
-                title: '대박 힌트',
+                title: '초성 힌트',
+                isTopRank: isTopRank,
                 description: const TextSpan(
                   children: [
                     TextSpan(
-                        text: '10%의 확률로 정답에 포함된\n',
+                        text: '정답의 초성을 알려드려요!\n',
                         style: TextStyle(
                             color: Colors.black87,
                             fontWeight: FontWeight.w600)),
-                    TextSpan(
-                      text: ' 한 글자',
-                      style: TextStyle(
-                        color: Color(0xFF1659C7),
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    TextSpan(
-                      text: '를 알려드려요!',
-                      style: TextStyle(
-                          color: Colors.black87, fontWeight: FontWeight.w600),
-                    ),
+                    // TextSpan(
+                    //   text: ' 한 글자',
+                    //   style: TextStyle(
+                    //     color: Color(0xFF1659C7),
+                    //     fontWeight: FontWeight.w900,
+                    //   ),
+                    // ),
+                    // TextSpan(
+                    //   text: '를 알려드려요!',
+                    //   style: TextStyle(
+                    //       color: Colors.black87, fontWeight: FontWeight.w600),
+                    // ),
                   ],
                 ),
                 buttonText: '힌트 받기',
@@ -304,7 +185,6 @@ class HintDialog extends StatelessWidget {
 // ─────────────────────────────────────
 // Hint Card
 // ─────────────────────────────────────
-
 class HintCard extends StatelessWidget {
   final String title;
   final TextSpan description;
@@ -316,6 +196,7 @@ class HintCard extends StatelessWidget {
   final Color borderColor;
   final Color titleColor;
   final LexiButtonType buttonType;
+  final bool isTopRank; // 옵셔널 (기본값 false)
 
   const HintCard({
     super.key,
@@ -328,75 +209,78 @@ class HintCard extends StatelessWidget {
     required this.borderColor,
     required this.titleColor,
     required this.buttonType,
+    this.isTopRank = false, // required 아님
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 100,
-      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: borderColor,
-          width: 2,
-        ),
+        border: Border.all(color: borderColor, width: 2),
       ),
-      child: Row(
-        children: [
-          // 이미지
-          Image.asset(
-            imagePath,
-            width: 70,
-            height: 70,
-            fit: BoxFit.contain,
-          ),
-
-          const SizedBox(width: 5),
-
-          // 오른쪽 영역
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 제목
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: titleColor,
+      child: ClipRRect(
+        // 테두리 두께(2)만큼 줄여서 안쪽 모서리에 맞춤
+        borderRadius: BorderRadius.circular(22),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                children: [
+                  Image.asset(imagePath, width: 70, height: 70, fit: BoxFit.contain),
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: titleColor,
+                          ),
+                        ),
+                        Text.rich(
+                          description,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            height: 1.4,
+                            color: Color(0xFF333333),
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: LexiGameButton(
+                            height: 20,
+                            width: 70,
+                            text: buttonText,
+                            type: buttonType,
+                            onTap: onButtonPressed,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-
-                // 설명
-                Text.rich(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    height: 1.4,
-                    color: Color(0xFF333333),
-                  ),
-                ),
-
-                const SizedBox(height: 3),
-
-                // 버튼 오른쪽 정렬
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: LexiGameButton(
-                    height: 20,
-                    width: 70,
-                    text: buttonText,
-                    type: buttonType,
-                    onTap: onButtonPressed,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+
+            if (isTopRank)
+              const Positioned.fill(
+                child: LockOverlay(
+                  message: '유사도 10위안의 단어를 찾으면 \n 초성 힌트가 열립니다!',
+                  iconSize: 40,
+                  fontSize: 10,
+                  spacing: 6,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
