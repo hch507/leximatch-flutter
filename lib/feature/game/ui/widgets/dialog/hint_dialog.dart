@@ -273,7 +273,7 @@ class HintCard extends StatelessWidget {
             if (isTopRank)
               const Positioned.fill(
                 child: LockOverlay(
-                  message: '유사도 10위안의 단어를 찾으면 \n 힌트가 열립니다!',
+                  message: '유사도 10위안의 단어를 찾으면 \n 초성 힌트가 열립니다!',
                   iconSize: 40,
                   fontSize: 10,
                   spacing: 6,
